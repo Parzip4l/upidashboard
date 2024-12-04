@@ -21,5 +21,3 @@ class FundingHistory extends Model
         return $this->belongsTo(TeamComposition::class);
     }
 }
-  
-}

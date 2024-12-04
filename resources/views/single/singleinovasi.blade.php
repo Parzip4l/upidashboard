@@ -980,48 +980,43 @@
     }
 </script>
 <script>
-    // Get the checkboxes, buttons, and the feedback section
-const lengkapdataCheckbox = document.getElementById('lengkapdata');
-const sesuaidataCheckbox = document.getElementById('sesuaidata');
-const revisiCheckbox = document.getElementById('revisi');
-const lanjutkanBtn = document.getElementById('lanjutkanBtn');
-const revisiBtn = document.getElementById('revisiBtn');
-const feedbackSection = document.getElementById('feedbackSection');
-const feedbackText = document.getElementById('feedbackText');
-const proposalId = document.getElementById('IDProposal').value; // Retrieve the ID from the hidden input
+// review.js
 
-// Function to update button states based on checkbox selections
-function updateButtonState() {
-    if (lengkapdataCheckbox.checked && sesuaidataCheckbox.checked) {
-        // Enable 'Lanjutkan Proses' button
-        lanjutkanBtn.classList.remove('disabled');
-        lanjutkanBtn.removeAttribute('disabled');
-    } else {
-        // Disable 'Lanjutkan Proses' button
-        lanjutkanBtn.classList.add('disabled');
-        lanjutkanBtn.setAttribute('disabled', true);
+document.addEventListener("DOMContentLoaded", function () {
+    const lengkapdataCheckbox = document.getElementById('lengkapdata');
+    const sesuaidataCheckbox = document.getElementById('sesuaidata');
+    const revisiCheckbox = document.getElementById('revisi');
+    const lanjutkanBtn = document.getElementById('lanjutkanBtn');
+    const revisiBtn = document.getElementById('revisiBtn');
+    const feedbackSection = document.getElementById('feedbackSection');
+    const feedbackText = document.getElementById('feedbackText');
+    const proposalId = document.getElementById('IDProposal')?.value; // Optional chaining in case the element is not present
+
+    function updateButtonState() {
+        if (lengkapdataCheckbox.checked && sesuaidataCheckbox.checked) {
+            lanjutkanBtn.classList.remove('disabled');
+            lanjutkanBtn.removeAttribute('disabled');
+        } else {
+            lanjutkanBtn.classList.add('disabled');
+            lanjutkanBtn.setAttribute('disabled', true);
+        }
+
+        if (revisiCheckbox && revisiCheckbox.checked) {
+            revisiBtn.classList.remove('disabled');
+            revisiBtn.removeAttribute('disabled');
+            feedbackSection.style.display = 'block';
+        } else {
+            revisiBtn.classList.add('disabled');
+            revisiBtn.setAttribute('disabled', true);
+            feedbackSection.style.display = 'none';
+        }
     }
 
-    if (revisiCheckbox.checked) {
-        // Enable 'Revisi' button and show the feedback section
-        revisiBtn.classList.remove('disabled');
-        revisiBtn.removeAttribute('disabled');
-        feedbackSection.style.display = 'block';
-    } else {
-        // Disable 'Revisi' button and hide the feedback section
-        revisiBtn.classList.add('disabled');
-        revisiBtn.setAttribute('disabled', true);
-        feedbackSection.style.display = 'none';
-    }
-}
+    if (lengkapdataCheckbox) lengkapdataCheckbox.addEventListener('change', updateButtonState);
+    if (sesuaidataCheckbox) sesuaidataCheckbox.addEventListener('change', updateButtonState);
+    if (revisiCheckbox) revisiCheckbox.addEventListener('change', updateButtonState);
 
-    // Add event listeners to checkboxes
-    lengkapdataCheckbox.addEventListener('change', updateButtonState);
-    sesuaidataCheckbox.addEventListener('change', updateButtonState);
-    revisiCheckbox.addEventListener('change', updateButtonState);
-
-    // SweetAlert confirmation when clicking "Lanjutkan Proses" button
-    lanjutkanBtn.addEventListener('click', function (e) {
+    lanjutkanBtn?.addEventListener('click', function (e) {
         e.preventDefault();
         if (!lanjutkanBtn.classList.contains('disabled')) {
             Swal.fire({
@@ -1033,35 +1028,32 @@ function updateButtonState() {
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // AJAX request to update the proposal status
                     fetch(`/update-status-review/${proposalId}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // CSRF token for Laravel
+                            'X-CSRF-TOKEN': '{{csrf_token()}}',
                         },
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire('Berhasil!', 'Status berhasil diubah menjadi review.', 'success')
-                            .then(() => location.reload());
-                        } else {
-                            Swal.fire('Gagal!', 'Terjadi kesalahan, status tidak diubah.', 'error');
-                        }
-                    })
-                    .catch(error => Swal.fire('Gagal!', error.message || 'Terjadi kesalahan, silakan coba lagi.', 'error'));
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Berhasil!', 'Status berhasil diubah menjadi review.', 'success')
+                                    .then(() => location.reload());
+                            } else {
+                                Swal.fire('Gagal!', 'Terjadi kesalahan, status tidak diubah.', 'error');
+                            }
+                        })
+                        .catch(error => Swal.fire('Gagal!', error.message, 'error'));
                 }
             });
         }
     });
 
-    // SweetAlert confirmation when clicking "Revisi" button
-    revisiBtn.addEventListener('click', function (e) {
+    revisiBtn?.addEventListener('click', function (e) {
         e.preventDefault();
         if (!revisiBtn.classList.contains('disabled')) {
             const feedback = feedbackText.value.trim();
-
             if (!feedback) {
                 Swal.fire('Perhatian!', 'Silakan masukkan catatan revisi.', 'warning');
                 return;
@@ -1076,52 +1068,29 @@ function updateButtonState() {
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // AJAX request to update the proposal with revision feedback
                     fetch(`/update-status-revisi/${proposalId}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' 
+                            'X-CSRF-TOKEN': '{{csrf_token()}}',
                         },
                         body: JSON.stringify({ feedback: feedback })
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire('Berhasil!', 'Revisi berhasil dikirim.', 'success')
-                            .then(() => location.reload());
-                        } else {
-                            Swal.fire('Gagal!', 'Terjadi kesalahan, revisi tidak dikirim.', 'error');
-                        }
-                    })
-                    .catch(error => Swal.fire('Gagal!', error.message || 'Terjadi kesalahan, silakan coba lagi.', 'error'));
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Berhasil!', 'Revisi berhasil dikirim.', 'success')
+                                    .then(() => location.reload());
+                            } else {
+                                Swal.fire('Gagal!', 'Terjadi kesalahan, revisi tidak dikirim.', 'error');
+                            }
+                        })
+                        .catch(error => Swal.fire('Gagal!', error.message, 'error'));
                 }
             });
         }
     });
-</script>
-@endpushwith revision feedback
-                    fetch(`/update-status-revisi/${proposalId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' 
-                        },
-                        body: JSON.stringify({ feedback: feedback })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire('Berhasil!', 'Revisi berhasil dikirim.', 'success')
-                            .then(() => location.reload());
-                        } else {
-                            Swal.fire('Gagal!', 'Terjadi kesalahan, revisi tidak dikirim.', 'error');
-                        }
-                    })
-                    .catch(error => Swal.fire('Gagal!', error.message || 'Terjadi kesalahan, silakan coba lagi.', 'error'));
-                }
-            });
-        }
-    });
+});
+
 </script>
 @endpush

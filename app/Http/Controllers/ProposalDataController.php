@@ -458,6 +458,3 @@ class ProposalDataController extends Controller
         return response()->json(['success' => true, 'message' => 'Status updated to revisi and feedback saved']);
     }
 }
-      return response()->json(['success' => true, 'message' => 'Status updated to revisi and feedback saved']);
-    }
-}
