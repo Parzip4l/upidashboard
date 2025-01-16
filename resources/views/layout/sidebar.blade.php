@@ -44,10 +44,10 @@
                 <span class="link-title">Data Mitra</span>
                 </a>
             </li>
-            <li class="nav-item {{ active_class(['']) }}">
-                <a href="{{ route('hilirasasi-inovasi.index') }}" class="nav-link">
+            <li class="nav-item {{ active_class(['usersetting.index']) }}">
+                <a href="{{ route('usersetting.index') }}" class="nav-link">
                 <i class="link-icon" data-feather="settings"></i>
-                <span class="link-title">Setting</span>
+                <span class="link-title">Setting User</span>
                 </a>
             </li>
             @endif

@@ -45,7 +45,7 @@ Route::get('/', function () {
 })->name('home');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
-Route::group(['middleware' => ['role:admin|reviewer']], function () {
+Route::group(['middleware' => ['role:admin|reviewer|superadmin']], function () {
     Route::post('hilirisasi/save-draft', [HilirasasiInovasiController::class, 'saveDraft'])->name('hilirisasi.save-draft');
     
     // Pemenang
@@ -75,6 +75,12 @@ Route::group(['middleware' => ['role:user']], function () {
     Route::post('proposals/save-draft', [ProposalDataController::class, 'saveDraft'])->name('proposals.saveDraft');
     Route::get('/hilirasasi-inovasi/edit', [HilirasasiInovasiController::class, 'edit'])->name('hilirasasi-inovasi.edit');
     Route::post('/hilirasasi-inovasi/store', [HilirasasiInovasiController::class, 'store'])->name('hilirasasi-inovasi.store');
+});
+
+
+Route::group(['middleware' => ['role:superadmin|admin']], function () {
+    Route::get('/setting-user-data', [UserController::class, 'dataUser'])->name('usersetting.index');
+    Route::put('/update-user/{id}', [UserController::class, 'updateUser'])->name('usersetting.update');
 });
 
 Route::group(['prefix' => 'email'], function(){
