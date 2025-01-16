@@ -14,6 +14,7 @@ use App\TeamComposition;
 use App\IndustryPartner;
 use App\AdminDocument;
 use App\FundingHistory;
+use App\UserActivityLog;
 use DataTables;
 
 class HilirasasiInovasiController extends Controller
@@ -213,8 +214,13 @@ class HilirasasiInovasiController extends Controller
                                     ->where('status', '!=', 'draft')
                                     ->orderBy('id', 'desc')
                                     ->first();
+        
+        $logs = UserActivityLog::with('user')
+            ->where('proposal_id', $id)
+            ->latest()
+            ->get();
 
-        return view('single.singleinovasi', compact('data', 'nextProposal', 'previousProposal'));
+        return view('single.singleinovasi', compact('data', 'nextProposal', 'previousProposal','logs'));
     }
 
 

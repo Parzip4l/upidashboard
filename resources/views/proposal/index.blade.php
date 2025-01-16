@@ -665,8 +665,8 @@
 
     .step.partial {
         color:#fff!important;
-        background : #fbc02d;
-        border-color: #fbc02d;
+        background : #cc2952;
+        border-color: #cc2952;
     }
 
     .step:not(.completed):not(.active) {
@@ -700,52 +700,6 @@
         });
     @endif
 </script>
-@endpushe;
-        top: 50%;
-        left: 100%;
-        width: 100%;
-        height: 2px;
-        background-color: #ccc;
-        transform: translateY(-50%);
-        z-index: -1;
-    }
-
-    .step:last-child::after {
-        display: none;
-    }
-
-    .step.completed {
-        color: #fff; 
-        background : #048b3f;
-        border-color: #048b3f;
-    }
-
-    .step.active {
-        color: #fff; /* Warna ungu */
-        background : #5c6bc0;
-        border-color: #5c6bc0;
-    }
-
-    .step.partial {
-        color:#fff!important;
-        background : #fbc02d;
-        border-color: #fbc02d;
-    }
-
-    .step:not(.completed):not(.active) {
-        color: #ccc;
-    }
-    .draft-content img {
-        width: 200px;
-    }
-
-    .draft-content {
-        padding: 50px;
-        border: 2px dashed #aaa;
-        border-radius: 30px;
-        text-align: center;
-    }
-</style>
 <script>
     @if(session('success'))
         Swal.fire({

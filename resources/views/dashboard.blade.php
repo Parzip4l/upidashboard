@@ -154,15 +154,34 @@
     }
 @endphp
 @if($dataProposal)
-<div class="alert @if($dataProposal->status == 'ditolak') bg-danger
-            @elseif($dataProposal->status == 'review') bg-warning
-            @elseif($dataProposal->status == 'submited') bg-primary
-            @elseif($dataProposal->status == 'revisi') bg-warning
-            @elseif($dataProposal->status == 'disetujui') bg-success
-            @else bg-secondary @endif" role="alert">
-            <h6 class="mb-2">Proposal Status : {{$dataProposal->status}}</h6>
-            <h6>Judul Proposal : {{$dataProposal->judul_proposal}}</h6>
+
+<div class="alert-banner @if($dataProposal->status == 'ditolak') error
+            @elseif($dataProposal->status == 'review') warning
+            @elseif($dataProposal->status == 'submited') info
+            @elseif($dataProposal->status == 'selesai di review') info
+            @elseif($dataProposal->status == 'revisi') warning
+            @elseif($dataProposal->status == 'waiting-verifikasi-revisi') warning
+            @elseif($dataProposal->status == 'sebagai pemenang') success
+            @else bg-secondary @endif">
+    <div class="alert-content">
+        <h4>Proposal {{$dataProposal->status}}</h4>
+        <p>{{$dataProposal->judul_proposal}}</p>
+        <p>
+            @if($dataProposal->status ==='waiting-verifikasi-revisi')
+                Proposal Anda sedang menunggu proses verifikasi. Harap menunggu hasil verifikasi
+            @elseif($dataProposal->status ==='revisi')
+                Proposal Anda memerlukan revisi. Silakan periksa catatan dan lakukan perbaikan.
+            @elseif($dataProposal->status ==='submited')
+                Proposal Anda sedang menunggu proses verifikasi administrasi.
+            @elseif($dataProposal->status ==='selesai di review')
+                Proposal Anda telah selesai di review, silahkan menunggu untuk penetapan pemenang.
+            @elseif($dataProposal->status ==='sebagai pemenang')
+                Proposal Anda telah ditetapkan sebagai pemenang, silahkan menunggu untuk penandatanganan kontrak.
+            @endif
+        </p>
+    </div>
 </div>
+
 <div class="row">
     <div class="col-lg-8 col-xl-8 grid-margin grid-margin-xl-0">
         <div class="card">
@@ -175,6 +194,7 @@
                             @elseif($dataProposal->status == 'review') bg-warning
                             @elseif($dataProposal->status == 'revisi') bg-warning
                             @elseif($dataProposal->status == 'disetujui') bg-success
+                            @elseif($dataProposal->status == 'waiting-verifikasi-revisi') bg-warning
                             @else bg-secondary
                             @endif">
                             {{$dataProposal->status}}
@@ -183,7 +203,9 @@
                     <div class="tombol-edit-wrap d-flex align-self-center">
                         <button class="btn btn-sm btn-outline-secondary me-2 minimizeButton" data-target="contentProposal">Hide Data</button>
                         <button class="btn btn-sm btn-outline-secondary me-2 maximizeButton" data-target="contentProposal" style="display: none;">Show Data</button>
+                        @if($dataProposal->status == 'revisi')
                         <a href="{{route('proposals.edit', $dataProposal->id)}}" class="btn btn-sm btn-warning text-white">Edit Data Proposal</a>
+                        @endif
                     </div>
                 </div>
                 <div id="contentProposal" class="content">
@@ -269,6 +291,44 @@
                 </div>
             </div>
         </div>
+
+        @if($dataProposal->status === 'sebagai pemenang')
+        <!-- Kontrak -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="card-title-head-custom d-flex justify-content-between">
+                    <div class="judul align-self-center">
+                        <h6 class="card-title align-self-center mb-0">Kontrak Pemenang</h6>
+                    </div>
+                    <div class="tombol-edit-wrap d-flex align-self-center">
+                        <button class="btn btn-sm btn-outline-secondary me-2 minimizeButton" data-target="contentKontrak">Hide Data</button>
+                        <button class="btn btn-sm btn-outline-secondary me-2 maximizeButton" data-target="contentKontrak" style="display: none;">Show Data</button>
+                    </div>
+                </div>
+                <div id="contentKontrak" class="content">
+                    <div class="data-content mt-4">
+                        <div class="details-data-proposal">
+                            <div class="draft-status-wrap">
+                                <div class="draft-content">
+                                    @php
+                                        $pemenang = App\PemenangM::where('proposal_id', $dataProposal->id)->first();
+                                        $kontrak = App\KontrakPemenang::where('proposal_id', $dataProposal->id)->first();
+                                    @endphp
+                                    @if(!$kontrak)
+                                    <img src="{{ asset('/proposaldraft.png') }}" alt="" style="max-width : 50%;">
+                                    <h3 class="mt-4">Kontrak Belum Dibuat</h3>
+                                    @else
+                                    <p class="text-muted"><a href="{{ $kontrak->kontrak }}">Download Kontrak</a></p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+        <!-- End Kontrak -->
 
         <!-- Komentar -->
         <div class="card mt-4">
@@ -724,50 +784,41 @@
                 @endphp
                 <div id="contentTimeline">
                     <ul class="timeline">
-                        <li class="event {{ $timeline->proposal_upload === '1' ? 'completed' : 'not-completed' }}">
-                            <p class="text-primary tx-12 mb-2">{{$dataProposal->created_at}}</p>
-                            <h3 class="title text-primary">Upload Proposal</h3>
-                            
+                        <li class="{{ $timeline->proposal_upload === '1' ? 'success completed' : 'danger incompleted' }}">
+                            <small class="text-muted">{{$dataProposal->created_at}}</small>
+                            <p class="action">Upload Proposal</p>
                         </li>
-                        <li class="event {{ $timeline->administrasi === '1' ? 'completed' : 'not-completed' }}">
-                            <p class="text-primary tx-12 mb-2">{{$dataProposal->created_at}}</p>
-                            <h3 class="title text-primary">Administrasi</h3>
-                                
+                        <li class="{{ $timeline->administrasi === '1' ? 'success completed' : 'danger incompleted' }}">
+                            <small class="text-muted">{{$dataProposal->created_at}}</small>
+                            <p class="action">Administrasi</p>
                         </li>
-                        <li class="event {{ $timeline->substansi === '1' ? 'completed' : 'not-completed' }}">
-                            <p class="text-primary tx-12 mb-2">{{$dataProposal->created_at}}</p>
-                            <h3 class="title text-primary">Seleksi Subtansi</h3>
-                                
+                        <li class="{{ $timeline->substansi === '1' ? 'success completed' : 'danger incompleted' }}">
+                            <small class="text-muted">{{$dataProposal->created_at}}</small>
+                            <p class="action">Seleksi Subtansi</p>
                         </li>
-                        <li class="event {{ $timeline->revisi === '1' ? 'completed' : 'not-completed' }}">
-                            <p class="text-primary tx-12 mb-2">{{$dataProposal->created_at}}</p>
-                            <h3 class="title text-primary">Revisi</h3>
-                                
+                        <li class="{{ $timeline->revisi === '1' ? 'warning incompleted' : 'danger incompleted' }}">
+                            <small class="text-muted">{{$dataProposal->created_at}}</small>
+                            <p class="action">Revisi</p>
                         </li>
-                        <li class="event {{ $timeline->revisi_upload === '1' ? 'completed' : 'not-completed' }}">
-                            <p class="text-primary tx-12 mb-2">{{$dataProposal->created_at}}</p>
-                            <h3 class="title text-primary">Upload Revisi</h3>
-                                
+                        <li class="{{ $timeline->revisi_upload === '0' ? 'danger incompleted' : 'success completed' }}">
+                            <small class="text-muted">{{$dataProposal->created_at}}</small>
+                            <p class="action">Upload Revisi</p>
                         </li>
-                        <li class="event {{ $timeline->verifikasi_revisi === '1' ? 'completed' : 'not-completed' }}">
-                            <p class="text-primary tx-12 mb-2">{{$dataProposal->created_at}}</p>
-                            <h3 class="title text-primary">Verifikasi Proposal Revisi</h3>
-                                
+                        <li class="{{ $timeline->revisi_upload === '1' ? 'warning incompleted' : 'danger incompleted' }}">
+                            <small class="text-muted">{{$dataProposal->created_at}}</small>
+                            <p class="action">Verifikasi Proposal Revisi</p>
                         </li>
-                        <li class="event {{ $timeline->penetapan_pemenang === '1' ? 'completed' : 'not-completed' }}">
-                            <p class="text-primary tx-12 mb-2">{{$dataProposal->created_at}}</p>
-                            <h3 class="title text-primary">Penetapan Pemenang</h3>
-                                
+                        <li class="{{ $timeline->penetapan_pemenang === '1' ? 'success completed' : 'danger incompleted' }}">
+                            <small class="text-muted">{{$dataProposal->created_at}}</small>
+                            <p class="action">Penetapan Pemenang</p>
                         </li>
-                        <li class="event {{ $timeline->kontrak === '1' ? 'completed' : 'not-completed' }}">
-                            <p class="text-primary tx-12 mb-2">{{$dataProposal->created_at}}</p>
-                            <h3 class="title text-primary">Kontrak</h3>
-                                
+                        <li class="{{ $timeline->kontrak === '1' ? 'success completed' : 'danger incompleted' }}">
+                            <small class="text-muted">{{$dataProposal->created_at}}</small>
+                            <p class="action">Kontrak</p>
                         </li>
-                        <li class="event {{ $timeline->pelaksanaan === '1' ? 'completed' : 'not-completed' }}">
-                            <p class="text-primary tx-12 mb-2">{{$dataProposal->created_at}}</p>
-                            <h3 class="title text-primary">Pelaksanaan</h3>
-                                
+                        <li class="{{ $timeline->pelaksanaan === '1' ? 'success completed' : 'danger incompleted' }}">
+                            <small class="text-muted">{{$dataProposal->created_at}}</small>
+                            <p class="action">Pelaksanaan</p>
                         </li>
                     </ul>
                 </div>
@@ -840,8 +891,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
+        .notfound {
+            text-align:center;
+        }
+
         .timeline {
-            border-left: 3px solid #6571ff;
+            border-left: none!important;
             border-bottom-right-radius: 0.25rem;
             border-top-right-radius: 0.25rem;
             background: none!important;
@@ -852,57 +908,60 @@
             max-width: 100%;
         }
 
-        .timeline .event {
-            border-bottom: 1px dashed #e9ecef;
-            padding: 10px;
-            padding-left : 20px;
-            margin-bottom: 10px;
+        li {
+            list-style: none;
+        }
+
+        .timeline li {
             position: relative;
+            padding-bottom: 32px;
+            padding-left: 32px;
         }
-
-        .timeline .event:after {
-            box-shadow: 0 0 0 3px #6571ff;
-            left: -15px;
-            background: #fff;
-            border-radius: 50%;
-            height: 9px;
-            width: 9px;
+        .timeline li:before {
             content: "";
-            top: 25px;
+            position: absolute;
+            display: block;
+            top: 1.7rem;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            background-color: #fff;
+            border-radius: 100%;
         }
-
-        .notfound {
-            text-align:center;
+        .timeline li:not([class]):before {
+            box-shadow: inset 0px 0px 0px 2px #cccccc;
         }
-
-        .timeline .event.not-completed:after {
-            box-shadow: 0 0 0 3px #adb5bd;
-            left: -15px;
-            background: #fff;
-            border-radius: 50%;
-            height: 9px;
-            width: 9px;
+        .timeline li:after {
             content: "";
-            top: 25px;
+            position: absolute;
+            display: block;
+            top: calc(1.7rem + 12px);
+            left: 3px;
+            bottom: -1.5rem;
+            width: 2px;
+            background-color: #cccccc;
         }
 
-        li.event.completed {
-            background: #6571ff1a;
-            border-radius: 20px;
-            border-bottom: none;
-            margin-left: 10px;
+        .timeline li:last-child:before {
+            top: 1.825rem;
         }
-        li.event.not-completed {
-            background: #eee;
-            border-radius: 20px;
-            border-bottom: none;
-            margin-left: 10px;
+        .timeline li:last-child:after {
+            content: none;
         }
-
-        .timeline .event:last-of-type {
-            padding-bottom: 25px;
-            margin-bottom: 0;
-            border: none;
+        .timeline li.success:before {
+            background-color: #048b3f;
+        }
+        .timeline li.success:not(.incompleted):after {
+            background-color: #048b3f;
+        }
+        .timeline li.warning:before {
+            background-color: #f2a51a;
+        }
+        .timeline li.warning:not(.incompleted):after {
+            background-color: #739e41;
+        }
+        .timeline li.danger:before {
+            background-color: #cc2952;
         }
 
         .footer-content-details-proposal {
@@ -913,6 +972,11 @@
             font-size : 12px;
             color : #555;
             margin-top : 10px;
+        }
+
+        p.action {
+            font-weight:500;
+            font-size:14px;
         }
 
         .file-data img {
@@ -972,6 +1036,72 @@
             border-radius: 30px;
             text-align: center;
         }
+
+        .alert-banner {
+            display: flex;
+            align-items: center;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-icon {
+            font-size: 20px;
+            margin-right: 15px;
+        }
+
+        .alert-content h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .alert-content p {
+            margin: 5px 0 10px;
+            font-size: 14px;
+        }
+
+        .alert-content a {
+            font-size: 14px;
+            color: inherit;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .alert-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: inherit;
+        }
+
+        .alert-banner.success {
+            background-color: #dff2d8;
+            color: #2d662b;
+        }
+
+        .alert-banner.info {
+            background-color: #d9f2fa;
+            color: #2a6476;
+        }
+
+        .alert-banner.warning {
+            background-color: #fff6da;
+            color: #7d591d;
+        }
+
+        .alert-banner.error {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
     </style>
     <script>
         function previewExcel(fileUrl) {

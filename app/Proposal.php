@@ -15,6 +15,7 @@ class Proposal extends Model
         'ketua_inovator',
         'nama_industri',
         'tkt',
+        'bukti_tkt',
         'judul_proposal',
         'skema',
         'tema',

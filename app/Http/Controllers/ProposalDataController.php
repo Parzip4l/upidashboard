@@ -15,6 +15,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+// Helper
+use App\Helpers\ActivityLogHelper;
+
 
 class ProposalDataController extends Controller
 {
@@ -173,6 +176,7 @@ class ProposalDataController extends Controller
                 'hki_agreement' => $request->hasFile('hki_agreement') ? $request->file('hki_agreement')->store('admin_documents', 'public') : null,
                 'budget_plan_file' => $request->hasFile('budget_plan_file') ? $request->file('budget_plan_file')->store('admin_documents', 'public') : null,
             ]);
+            ActivityLogHelper::log(auth()->id(), 'create', 'proposal', 'Membuat proposal baru', $proposal->id);
 
             DB::commit();
 
@@ -213,6 +217,7 @@ class ProposalDataController extends Controller
                 TeamComposition::create(array_merge($teamData, ['proposal_id' => $proposal->id]));
             }
         }
+        ActivityLogHelper::log(auth()->id(), 'draft', 'proposal', 'Memperbarui proposal sebagai draft dengan ID: ' . $id, $id);
 
         // Return a success response
         return response()->json(['status' => 'success', 'message' => 'Draft saved successfully.']);
@@ -263,6 +268,7 @@ class ProposalDataController extends Controller
     {
         $user = Auth::user();
         
+        
         // Validate the incoming request
         $validatedData = $request->validate([
             'fakultas_kamda' => 'required',
@@ -281,22 +287,48 @@ class ProposalDataController extends Controller
             // Find the proposal by ID
             $proposal = Proposal::findOrFail($id);
             
-            // Determine the status based on the presence of required fields
-            $status = (
-                $request->fakultas_kamda &&
-                $request->nama_prodi &&
-                $request->ketua_inovator &&
-                $request->nama_industri &&
-                $request->skema &&
-                $request->tema &&
-                $request->tkt &&
-                $request->judul_proposal &&
-                $request->durasi_pelaksanaan &&
-                $request->dana_hilirisasi &&
-                $request->mitra_tunai &&
-                $request->mitra_natura &&
-                $request->hasFile('bukti_tkt')
-            ) ? 'submited' : 'draft';
+            if($proposal->status === 'revisi') 
+            {
+                $status = (
+                    $request->fakultas_kamda &&
+                    $request->nama_prodi &&
+                    $request->ketua_inovator &&
+                    $request->nama_industri &&
+                    $request->skema &&
+                    $request->tema &&
+                    $request->tkt &&
+                    $request->judul_proposal &&
+                    $request->durasi_pelaksanaan &&
+                    $request->dana_hilirisasi &&
+                    $request->mitra_tunai &&
+                    $request->mitra_natura &&
+                    $request->hasFile('bukti_tkt')
+                ) ? 'waiting-verifikasi-revisi' : 'draft';
+                $updateStatus = Timeline::where('proposal_id', $proposal->id)->first();
+
+                if ($updateStatus) {
+
+                    $updateStatus->revisi_upload = 1;
+                    $updateStatus->save();
+                }
+            }else{
+                $status = (
+                    $request->fakultas_kamda &&
+                    $request->nama_prodi &&
+                    $request->ketua_inovator &&
+                    $request->nama_industri &&
+                    $request->skema &&
+                    $request->tema &&
+                    $request->tkt &&
+                    $request->judul_proposal &&
+                    $request->durasi_pelaksanaan &&
+                    $request->dana_hilirisasi &&
+                    $request->mitra_tunai &&
+                    $request->mitra_natura &&
+                    $request->hasFile('bukti_tkt')
+                ) ? 'submited' : 'draft';
+            }
+            
             // Update the proposal data
             $proposal->update([
                 'fakultas_kamda' => $request->fakultas_kamda,
@@ -408,6 +440,14 @@ class ProposalDataController extends Controller
                 'budget_plan_file' => $request->hasFile('budget_plan_file') ? $request->file('budget_plan_file')->store('admin_documents', 'public') : $documentData->budget_plan_file,
             ]);
 
+            ActivityLogHelper::log(
+                auth()->id(),
+                'update',
+                'proposal',
+                'Memperbarui proposal dengan ID: ' . $proposal->id,
+                $proposal->id // Pastikan ID proposal diteruskan
+            );
+
             DB::commit();
 
             return redirect()->route('proposals.index')->with('success', 'Proposal has been updated successfully');
@@ -439,20 +479,35 @@ class ProposalDataController extends Controller
         
         // Check if feedback is provided
         if ($request->has('feedback')) {
-            // Log feedback
-            \Log::info('Feedback received: ' . $request->input('feedback'));
-
-            // Insert into the Revisi table
-            $revisi = new Revisi();
-            $revisi->proposal_id = $proposal->id;  
-            $revisi->catatan = $request->input('feedback');
-            $revisi->created_by = $user->id;
-            $revisi->save();
+            // Cari revisi berdasarkan `proposal_id`
+            $revisi = Revisi::where('proposal_id', $proposal->id)->first();
+        
+            if ($revisi) {
+                // Update jika revisi sudah ada
+                $revisi->catatan = $request->input('feedback');
+                $revisi->created_by = $user->id; // Optional, jika perlu mengganti created_by
+                $revisi->save();
+            } else {
+                // Create jika revisi belum ada
+                $revisi = new Revisi();
+                $revisi->proposal_id = $proposal->id;  
+                $revisi->catatan = $request->input('feedback');
+                $revisi->created_by = $user->id;
+                $revisi->save();
+            }
         }
 
         // Update the proposal's status to 'revisi'
         $proposal->status = 'revisi';
         $proposal->save();
+
+        $updateStatus = Timeline::where('proposal_id', $proposal->id)->first();
+
+        if ($updateStatus) {
+
+            $updateStatus->revisi = 1;
+            $updateStatus->save();
+        }
 
         // Return a JSON response
         return response()->json(['success' => true, 'message' => 'Status updated to revisi and feedback saved']);

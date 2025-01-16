@@ -940,8 +940,8 @@
 
     .step.partial {
         color:#fff!important;
-        background : #fbc02d;
-        border-color: #fbc02d;
+        background : #cc2952;
+        border-color: #cc2952;
     }
 
     .step:not(.completed):not(.active) {
@@ -1014,27 +1014,6 @@
             newRow.innerHTML = `
                 <td><input type="text" name="team_members[${teamMemberIndex}][funding_history][${rowCount}][proposal_title]" class="form-control" value=""></td>
                 <td><input type="text" name="team_members[${teamMemberIndex}][funding_history][${rowCount}][year]" class="form-control" value=""></td>
-                <td><input type="text" name="team_members[${teamMemberIndex}][funding_history][${rowCount}][name]" class="form-control" value=""></td>
-                <td>
-                    <select name="team_members[${teamMemberIndex}][funding_history][${rowCount}][status]" class="form-control">
-                        <option value="Ketua">Ketua</option>
-                        <option value="Anggota">Anggota</option>
-                    </select>
-                </td>
-                <td><button type="button" class="btn btn-danger remove-funding-row">Hapus</button></td>
-            `;
-            
-            // Append the new row
-            tableBody.appendChild(newRow);
-            
-            // Add functionality to remove the row
-            newRow.querySelector('.remove-funding-row').addEventListener('click', function() {
-                tableBody.removeChild(newRow);
-            });
-        });
-    });
-</script>
-@endpushng_history][${rowCount}][year]" class="form-control" value=""></td>
                 <td><input type="text" name="team_members[${teamMemberIndex}][funding_history][${rowCount}][name]" class="form-control" value=""></td>
                 <td>
                     <select name="team_members[${teamMemberIndex}][funding_history][${rowCount}][status]" class="form-control">

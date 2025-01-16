@@ -22,9 +22,6 @@
                 <a href="#" class="btn btn-sm btn-custom btn-primary active" data-content="konsep">Konsep</a>
             </div>
             <div class="nav-item-custom me-2">
-                <a href="#" class="btn btn-sm btn-custom btn-primary" data-content="timeline">Timeline</a>
-            </div>
-            <div class="nav-item-custom me-2">
                 <a href="#" class="btn btn-sm btn-custom btn-primary" data-content="pra-kontrak">Pra Kontrak</a>
             </div>
             <div class="nav-item-custom me-2">
@@ -32,6 +29,9 @@
             </div>
             <div class="nav-item-custom me-2">
                 <a href="#" class="btn btn-sm btn-custom btn-primary" data-content="monitoring">Monitoring Internal</a>
+            </div>
+            <div class="nav-item-custom me-2">
+                <a href="#" class="btn btn-sm btn-custom btn-primary" data-content="timeline">Log Aktivitas</a>
             </div>
             <input type="hidden" class="idProposal" id="IDProposal" value="{{$data->id}}">
         </div>
@@ -571,57 +571,72 @@
                     </div>
                 </div>
             </div>
-            @if($data->status === 'submited')
+            @if($data->status === 'submited' && Auth::user()->role !== 'reviewer')
             <div class="card mt-4">
                 <div class="card-body">
                     <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" value="" id="lengkapdata">
-                        <label class="form-check-label" for="lengkapdata">
-                            Apakah Data Sudah Lengkap?
-                        </label>
+                        <input class="form-check-input" type="checkbox" id="lengkapdata">
+                        <label class="form-check-label" for="lengkapdata">Apakah Data Sudah Lengkap?</label>
                     </div>
                     <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" value="" id="sesuaidata">
-                        <label class="form-check-label" for="sesuaidata">
-                            Apakah Data Sudah Sesuai?
-                        </label>
+                        <input class="form-check-input" type="checkbox" id="sesuaidata">
+                        <label class="form-check-label" for="sesuaidata">Apakah Data Sudah Sesuai?</label>
                     </div>
                     <a href="#" class="btn btn-primary btn-sm disabled" id="lanjutkanBtn" disabled>Lanjutkan Proses</a>
                 </div>
             </div>
             @endif
-            @if (Auth::user()->role === 'reviewer')
+
+            @if($data->status === 'waiting-verifikasi-revisi' && Auth::user()->role === 'reviewer')
             <div class="card mt-4">
                 <div class="card-body">
                     <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" value="" id="lengkapdata">
-                        <label class="form-check-label" for="lengkapdata">
-                            Apakah Data Sudah Lengkap?
-                        </label>
+                        <input class="form-check-input" type="checkbox" id="lengkapdata">
+                        <label class="form-check-label" for="lengkapdata">Apakah Data Revisi Sudah Lengkap?</label>
                     </div>
                     <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" value="" id="sesuaidata">
-                        <label class="form-check-label" for="sesuaidata">
-                            Apakah Data Sudah Sesuai?
-                        </label>
+                        <input class="form-check-input" type="checkbox" id="sesuaidata">
+                        <label class="form-check-label" for="sesuaidata">Tetapkan Sebagai Pemenang?</label>
                     </div>
                     <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" value="" id="revisi">
-                        <label class="form-check-label" for="revisi">
-                            Revisi Diperlukan
-                        </label>
+                        <input class="form-check-input" type="checkbox" id="revisi">
+                        <label class="form-check-label" for="revisi">Revisi Diperlukan</label>
+                    </div>
+                    <a href="#" class="btn btn-warning btn-sm disabled" id="revisiBtn" disabled>Revisi</a>
+                    <a href="#" class="btn btn-primary btn-sm disabled" id="lanjutkanBtn" disabled>Lanjutkan Proses</a>
+                </div>
+            </div>
+            @endif
+
+            @if (Auth::user()->role === 'reviewer' &&  $data->status === 'submited' ||  $data->status === 'review')
+            <div class="card mt-4">
+                <div class="card-body">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="lengkapdata">
+                        <label class="form-check-label" for="lengkapdata">Apakah Data Sudah Lengkap?</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="sesuaidata">
+                        <label class="form-check-label" for="sesuaidata">Apakah Data Sudah Sesuai?</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="revisi">
+                        <label class="form-check-label" for="revisi">Revisi Diperlukan</label>
                     </div>
                     <a href="#" class="btn btn-primary btn-sm disabled" id="lanjutkanBtn" disabled>Lanjutkan Proses</a>
                     <a href="#" class="btn btn-warning btn-sm disabled" id="revisiBtn" disabled>Revisi</a>
-                    
-                    <!-- Revision feedback textarea -->
-                    <div id="feedbackSection" class="mt-3" style="display:none;">
-                        <label for="feedbackText">Catatan Revisi / Komentar:</label>
-                        <textarea id="feedbackText" class="form-control" name="feedback" rows="3" placeholder="Masukkan catatan revisi/ Komentar ..."></textarea>
-                    </div>
                 </div>
             </div>
             @endif
+
+            <div class="card mt-2">
+                <div class="card-body">
+                    <div id="feedbackSection" class="mt-3" style="display:none;">
+                        <label for="feedbackText">Catatan Revisi / Komentar:</label>
+                        <textarea id="feedbackText" class="form-control" rows="3" placeholder="Masukkan catatan revisi/komentar..."></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
             <div class="card">
@@ -637,50 +652,41 @@
                     </div>
                     <div id="contentTimeline">
                         <ul class="timeline">
-                            <li class="event {{ $timeline->proposal_upload === '1' ? 'completed' : 'not-completed' }}">
-                                <p class="text-primary tx-12 mb-2">{{$data->created_at}}</p>
-                                <h3 class="title text-primary">Upload Proposal</h3>
-                                
+                            <li class="{{ $timeline->proposal_upload === '1' ? 'success completed' : 'danger incompleted' }}">
+                                <small class="text-muted">{{$data->created_at}}</small>
+                                <p class="action">Upload Proposal</p>
                             </li>
-                            <li class="event {{ $timeline->administrasi === '1' ? 'completed' : 'not-completed' }}">
-                                <p class="text-primary tx-12 mb-2">{{$data->created_at}}</p>
-                                <h3 class="title text-primary">Administrasi</h3>
-                                    
+                            <li class="{{ $timeline->administrasi === '1' ? 'success completed' : 'danger incompleted' }}">
+                                <small class="text-muted">{{$data->created_at}}</small>
+                                <p class="action">Administrasi</p>
                             </li>
-                            <li class="event {{ $timeline->substansi === '1' ? 'completed' : 'not-completed' }}">
-                                <p class="text-primary tx-12 mb-2">{{$data->created_at}}</p>
-                                <h3 class="title text-primary">Seleksi Subtansi</h3>
-                                    
+                            <li class="{{ $timeline->substansi === '1' ? 'success completed' : 'danger incompleted' }}">
+                                <small class="text-muted">{{$data->created_at}}</small>
+                                <p class="action">Seleksi Subtansi</p>
                             </li>
-                            <li class="event {{ $timeline->revisi === '1' ? 'completed' : 'not-completed' }}">
-                                <p class="text-primary tx-12 mb-2">{{$data->created_at}}</p>
-                                <h3 class="title text-primary">Revisi</h3>
-                                    
+                            <li class="{{ $timeline->revisi === '1' ? 'warning incompleted' : 'danger incompleted' }}">
+                                <small class="text-muted">{{$data->created_at}}</small>
+                                <p class="action">Revisi</p>
                             </li>
-                            <li class="event {{ $timeline->revisi_upload === '1' ? 'completed' : 'not-completed' }}">
-                                <p class="text-primary tx-12 mb-2">{{$data->created_at}}</p>
-                                <h3 class="title text-primary">Upload Revisi</h3>
-                                    
+                            <li class="{{ $timeline->revisi_upload === '0' ? 'danger incompleted' : 'success completed' }}">
+                                <small class="text-muted">{{$data->created_at}}</small>
+                                <p class="action">Upload Revisi</p>
                             </li>
-                            <li class="event {{ $timeline->verifikasi_revisi === '1' ? 'completed' : 'not-completed' }}">
-                                <p class="text-primary tx-12 mb-2">{{$data->created_at}}</p>
-                                <h3 class="title text-primary">Verifikasi Proposal Revisi</h3>
-                                    
+                            <li class="{{ $timeline->revisi_upload === '1' ? 'warning incompleted' : 'danger incompleted' }}">
+                                <small class="text-muted">{{$data->created_at}}</small>
+                                <p class="action">Verifikasi Proposal Revisi</p>
                             </li>
-                            <li class="event {{ $timeline->penetapan_pemenang === '1' ? 'completed' : 'not-completed' }}">
-                                <p class="text-primary tx-12 mb-2">{{$data->created_at}}</p>
-                                <h3 class="title text-primary">Penetapan Pemenang</h3>
-                                    
+                            <li class="{{ $timeline->penetapan_pemenang === '1' ? 'success completed' : 'danger incompleted' }}">
+                                <small class="text-muted">{{$data->created_at}}</small>
+                                <p class="action">Penetapan Pemenang</p>
                             </li>
-                            <li class="event {{ $timeline->kontrak === '1' ? 'completed' : 'not-completed' }}">
-                                <p class="text-primary tx-12 mb-2">{{$data->created_at}}</p>
-                                <h3 class="title text-primary">Kontrak</h3>
-                                    
+                            <li class="{{ $timeline->kontrak === '1' ? 'success completed' : 'danger incompleted' }}">
+                                <small class="text-muted">{{$data->created_at}}</small>
+                                <p class="action">Kontrak</p>
                             </li>
-                            <li class="event {{ $timeline->pelaksanaan === '1' ? 'completed' : 'not-completed' }}">
-                                <p class="text-primary tx-12 mb-2">{{$data->created_at}}</p>
-                                <h3 class="title text-primary">Pelaksanaan</h3>
-                                    
+                            <li class="{{ $timeline->pelaksanaan === '1' ? 'success completed' : 'danger incompleted' }}">
+                                <small class="text-muted">{{$data->created_at}}</small>
+                                <p class="action">Pelaksanaan</p>
                             </li>
                         </ul>
                     </div>
@@ -733,8 +739,38 @@
         <div class="card-body">
             <div class="draft-status-wrap">
                 <div class="draft-content">
+                    @if(!$logs)
                     <img src="{{ asset('/proposaldraft.png') }}" alt="" style="max-width : 50%;">
                     <h3 class="mt-4">Data Tidak Tersedia</h3>
+                    @else 
+                    <div class="table-responsive">
+                        <table id="dataTableExample" class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php 
+                                    $no = 1;
+                                @endphp
+                                @foreach($logs as $log)
+                                    <tr>
+                                        <td>{{$no++}}</td>
+                                        <td>{{ $log->user->name }}</td>
+                                        <td>{{ $log->action }}</td>
+                                        <td>{{ $log->description }}</td>
+                                        <td>{{ $log->created_at->format('d M Y H:i') }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -789,7 +825,7 @@
 </script>
 <style>
     .timeline {
-        border-left: 3px solid #6571ff;
+        border-left: none!important;
         border-bottom-right-radius: 0.25rem;
         border-top-right-radius: 0.25rem;
         background: none!important;
@@ -800,53 +836,65 @@
         max-width: 100%;
     }
 
-    .timeline .event {
-        border-bottom: 1px dashed #e9ecef;
-        padding: 10px;
-        padding-left : 20px;
-        margin-bottom: 10px;
+    li {
+        list-style: none;
+    }
+
+    .timeline li {
         position: relative;
+        padding-bottom: 32px;
+        padding-left: 32px;
     }
-
-    .timeline .event:after {
-        box-shadow: 0 0 0 3px #6571ff;
-        left: -15px;
-        background: #fff;
-        border-radius: 50%;
-        height: 9px;
-        width: 9px;
+    .timeline li:before {
         content: "";
-        top: 25px;
+        position: absolute;
+        display: block;
+        top: 1.7rem;
+        left: 0;
+        width: 8px;
+        height: 8px;
+        background-color: #fff;
+        border-radius: 100%;
     }
-
-    .timeline .event.not-completed:after {
-        box-shadow: 0 0 0 3px #adb5bd;
-        left: -15px;
-        background: #fff;
-        border-radius: 50%;
-        height: 9px;
-        width: 9px;
+    .timeline li:not([class]):before {
+        box-shadow: inset 0px 0px 0px 2px #cccccc;
+    }
+    .timeline li:after {
         content: "";
-        top: 25px;
+        position: absolute;
+        display: block;
+        top: calc(1.7rem + 12px);
+        left: 3px;
+        bottom: -1.5rem;
+        width: 2px;
+        background-color: #cccccc;
     }
 
-    li.event.completed {
-        background: #6571ff1a;
-        border-radius: 20px;
-        border-bottom: none;
-        margin-left: 10px;
+    .timeline li:last-child:before {
+        top: 1.825rem;
     }
-    li.event.not-completed {
-        background: #eee;
-        border-radius: 20px;
-        border-bottom: none;
-        margin-left: 10px;
+    .timeline li:last-child:after {
+        content: none;
+    }
+    .timeline li.success:before {
+        background-color: #048b3f;
+    }
+    .timeline li.success:not(.incompleted):after {
+        background-color: #048b3f;
+    }
+    .timeline li.warning:before {
+        background-color: #f2a51a;
+    }
+    .timeline li.warning:not(.incompleted):after {
+        background-color: #739e41;
+    }
+    .timeline li.danger:before {
+        background-color: #cc2952;
     }
 
-    .timeline .event:last-of-type {
-        padding-bottom: 25px;
-        margin-bottom: 0;
-        border: none;
+    p.action {
+        font-weight:500;
+        font-size:14px;
     }
 
     .footer-content-details-proposal {
@@ -937,6 +985,7 @@
         border-radius: 30px;
         text-align: center;
     }
+    
 </style>
 <script>
     function previewExcel(fileUrl) {
@@ -980,8 +1029,6 @@
     }
 </script>
 <script>
-// review.js
-
 document.addEventListener("DOMContentLoaded", function () {
     const lengkapdataCheckbox = document.getElementById('lengkapdata');
     const sesuaidataCheckbox = document.getElementById('sesuaidata');
@@ -1032,7 +1079,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{csrf_token()}}',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         },
                     })
                         .then(response => response.json())
@@ -1072,7 +1119,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{csrf_token()}}',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         },
                         body: JSON.stringify({ feedback: feedback })
                     })
@@ -1091,6 +1138,5 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-
 </script>
 @endpush

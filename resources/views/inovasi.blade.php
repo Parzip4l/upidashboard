@@ -64,14 +64,7 @@
             },
             {
                 data: 'status', 
-                name: 'status',
-                render: function(data, type, row) {
-                    return `<select class="form-select status-select" data-id="${row.id}">
-                        <option value="pending" ${data == 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="disetujui" ${data == 'disetujui' ? 'selected' : ''}>Approved</option>
-                        <option value="ditolak" ${data == 'ditolak' ? 'selected' : ''}>Rejected</option>
-                    </select>`;
-                }
+                name: 'status'
             },
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ]
@@ -180,15 +173,6 @@
     @endif
 
     @if(session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: '{{ session('error') }}',
-        });
-    @endif
-</script>
-@endpush
-f(session('error'))
         Swal.fire({
             icon: 'error',
             title: 'Error',
