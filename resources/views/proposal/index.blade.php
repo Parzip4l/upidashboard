@@ -41,28 +41,37 @@
                     <!-- Step 1: Detail Proposal -->
                     <div class="form-step" id="form-step-1">
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="nama_fakultas" class="form-label">Nama Fakultas/Kamda</label>
                                     <input type="text" name="fakultas_kamda" id="fakultas_kamda" class="form-control">
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="nama_prodi">Nama Prodi</label>
                                     <input type="text" name="nama_prodi" id="nama_prodi" class="form-control">
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="ketua_inovator">Ketua Inovator</label>
                                     <input type="text" name="ketua_inovator" id="ketua_inovator" class="form-control">
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="nama_industri">Nama Industri (Mitra)</label>
                                     <input type="text" name="nama_industri" id="nama_industri" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label class="form-label" for="nama_industri">Tipe Proposal</label>
+                                    <select name="tipe_proposal" class="form-control" id="">
+                                        <option value="hilirisasi">Hilirisasi</option>
+                                        <option value="pkm">PKM</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
