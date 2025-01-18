@@ -32,7 +32,24 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h5>Pengajuan Proposal</h5>
+                <div class="legend d-flex">
+                    <div class="d-flex me-2">
+                        <div class="kotak bg-danger me-1"></div>
+                        <p class="text-secondary">Belum Terisi Lengkap</p>
+                    </div>
+                    <div class="d-flex me-2">
+                        <div class="kotak bg-success me-1"></div>
+                        <p class="text-secondary">Sudah Terisi Lengkap</p>
+                    </div>
+                    <div class="d-flex me-2">
+                        <div class="kotak bg-primary me-1"></div>
+                        <p class="text-secondary">Tab Aktif</p>
+                    </div>
+                    <div class="d-flex me-2">
+                        <div class="kotak bg-secondary me-1"></div>
+                        <p class="text-secondary">Belum Terisi</p>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
             <form id="proposalForm" action="{{ route('proposals.store') }}" method="POST" enctype="multipart/form-data">
@@ -69,8 +86,8 @@
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="nama_industri">Tipe Proposal</label>
                                     <select name="tipe_proposal" class="form-control" id="">
-                                        <option value="hilirisasi">Hilirisasi</option>
-                                        <option value="pkm">PKM</option>
+                                        <option value="hilirisasi">Hilirisasi Inovasi Hasil Penelitian </option>
+                                        <option value="pkm">Hilirisasi Inovasi Hasil PKM</option>
                                     </select>
                                 </div>
                             </div>
@@ -128,7 +145,7 @@
                                     <input type="text" name="judul_proposal" id="judul_proposal" class="form-control">
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label">Skema</label>
                                     <select name="skema" id="skema" class="form-control">
@@ -139,7 +156,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label">Tema</label>
                                     <select name="tema" id="tema" class="form-control">
@@ -153,7 +170,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="tkt">Tingkat Kesiapan Teknologi (TKT)</label>
                                     <select name="tkt" id="tkt" class="form-control">
@@ -162,12 +179,6 @@
                                         <option value="8">TKT 8</option>
                                         <option value="9">TKT 9</option>
                                     </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group mb-3">
-                                    <label class="form-label" for="bukti_tkt">Upload Bukti Pengukuran TKT</label>
-                                    <input type="file" name="bukti_tkt" id="bukti_tkt" class="form-control">
                                 </div>
                             </div>
                             
@@ -276,55 +287,67 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label class="form-label" for="proposal_usulan">1. Proposal Usulan (PDF only)</label>
+                                    <label class="form-label" for="bukti_tkt">1. Upload Roadmap Proposal</label>
+                                    <input type="file" name="roadmap" id="roadmap" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label class="form-label" for="bukti_tkt">2. Upload Bukti Pengukuran TKT</label>
+                                    <input type="file" name="bukti_tkt" id="bukti_tkt" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label class="form-label" for="proposal_usulan">3. Proposal Usulan (PDF only)</label>
                                     <input type="file" name="proposal_file" id="proposal_usulan" class="form-control" accept=".pdf">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label class="form-label" for="komitmen_mitra">2. Surat Pernyataan Komitmen Mitra (PDF only)</label>
+                                    <label class="form-label" for="komitmen_mitra">4. Surat Pernyataan Komitmen Mitra (PDF only)</label>
                                     <input type="file" name="partner_commitment_letter" id="komitmen_mitra" class="form-control" accept=".pdf">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label class="form-label" for="komitmen_dana">3. Pernyataan Komitmen Dana Mitra (PDF only)</label>
+                                    <label class="form-label" for="komitmen_dana">5. Pernyataan Komitmen Dana Mitra (PDF only)</label>
                                     <input type="file" name="funding_commitment_letter" id="komitmen_dana" class="form-control" accept=".pdf">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label class="form-label" for="tidak_studi_lanjut">4. Surat Pernyataan Tidak Sedang Studi Lanjut dan Tidak Berafiliasi dengan Mitra (PDF only)</label>
+                                    <label class="form-label" for="tidak_studi_lanjut">6. Surat Pernyataan Tidak Sedang Studi Lanjut dan Tidak Berafiliasi dengan Mitra (PDF only)</label>
                                     <input type="file" name="study_commitment_letter" id="tidak_studi_lanjut" class="form-control" accept=".pdf">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label class="form-label" for="biodata_pengusul">5. Formulir Biodata Pengusul (PDF only)</label>
+                                    <label class="form-label" for="biodata_pengusul">7. Formulir Biodata Pengusul (PDF only)</label>
                                     <input type="file" name="applicant_bio_form" id="biodata_pengusul" class="form-control" accept=".pdf">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label class="form-label" for="profil_mitra">6. Formulir Profil Mitra (PDF only)</label>
+                                    <label class="form-label" for="profil_mitra">8. Formulir Profil Mitra (PDF only)</label>
                                     <input type="file" name="partner_profile_form" id="profil_mitra" class="form-control" accept=".pdf">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label class="form-label" for="kesepakatan_kerja_sama">7. Surat Pernyataan Kesepakatan Pengusul dan Mitra Melakukan Kerja Sama (PDF only)</label>
+                                    <label class="form-label" for="kesepakatan_kerja_sama">9. Surat Pernyataan Kesepakatan Pengusul dan Mitra Melakukan Kerja Sama (PDF only)</label>
                                     <input type="file" name="cooperation_agreement" id="kesepakatan_kerja_sama" class="form-control" accept=".pdf">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label class="form-label" for="perjanjian_hki">8. Perjanjian HKI dengan Mitra (PDF only)</label>
+                                    <label class="form-label" for="perjanjian_hki">10. Perjanjian HKI dengan Mitra (PDF only)</label>
                                     <input type="file" name="hki_agreement" id="perjanjian_hki" class="form-control" accept=".pdf">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
-                                    <label class="form-label" for="rencana_anggaran_biaya">9. Rencana Anggaran Biaya (Excel only)</label>
+                                    <label class="form-label" for="rencana_anggaran_biaya">11. Rencana Anggaran Biaya (Excel only)</label>
                                     <input type="file" name="budget_plan_file" id="rencana_anggaran_biaya" class="form-control" accept=".xls,.xlsx">
                                 </div>
                             </div>
@@ -373,216 +396,216 @@
 <script>
     // JavaScript to handle navigation between steps
     const formSteps = document.querySelectorAll(".form-step");
-    let currentStep = 0;
-    let teamIndex = 0;
-    let FundingData = 0;
-    let fundingDataIndex = {};
+        let currentStep = 0;
+        let teamIndex = 0;
+        let FundingData = 0;
+        let fundingDataIndex = {};
 
-    // Function to update step color
-    function updateStepState() {
-        document.querySelectorAll(".step").forEach((step, index) => {
-            const stepId = index + 1; // Step indices are 1-based, so we add 1
-            const stepFields = document.querySelectorAll(`#form-step-${stepId} .form-control`);
+        // Function to update step color
+        function updateStepState() {
+            document.querySelectorAll(".step").forEach((step, index) => {
+                const stepId = index + 1; // Step indices are 1-based, so we add 1
+                const stepFields = document.querySelectorAll(`#form-step-${stepId} .form-control`);
 
-            // Check if all fields are filled in this step
-            let filledCount = 0;
-            stepFields.forEach((field) => {
-                if (field.value.trim() !== "") {
-                    filledCount++;
+                // Check if all fields are filled in this step
+                let filledCount = 0;
+                stepFields.forEach((field) => {
+                    if (field.value.trim() !== "") {
+                        filledCount++;
+                    }
+                });
+
+                // Update the color of the step based on the filled count
+                if (filledCount === stepFields.length) {
+                    step.classList.remove('partial', 'active', 'unfilled');
+                    step.classList.add('completed');
+                } else if (filledCount > 0) {
+                    step.classList.remove('completed', 'active', 'unfilled');
+                    step.classList.add('partial');
+                } else {
+                    step.classList.remove('completed', 'partial', 'active');
+                    step.classList.add('unfilled');
+                }
+
+                // Highlight the current active step
+                if (stepId === currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
                 }
             });
+        }
 
-            // Update the color of the step based on the filled count
-            if (filledCount === stepFields.length) {
-                step.classList.remove('partial', 'active', 'unfilled');
-                step.classList.add('completed');
-            } else if (filledCount > 0) {
-                step.classList.remove('completed', 'active', 'unfilled');
-                step.classList.add('partial');
-            } else {
-                step.classList.remove('completed', 'partial', 'active');
-                step.classList.add('unfilled');
+        // Ensure step 1 is displayed and active when the page loads
+        document.addEventListener("DOMContentLoaded", () => {
+            goToStep(1); // Load the first step on page load
+        });
+
+        // Function to go to a specific step
+        function goToStep(step) {
+            // Hide all form steps
+            document.querySelectorAll('.form-step').forEach((stepElement) => {
+                stepElement.style.display = 'none';
+            });
+
+            // Show the selected form step
+            document.getElementById('form-step-' + step).style.display = 'block';
+
+            // Update the current step indicator
+            document.querySelectorAll('.step').forEach((stepElement) => {
+                stepElement.classList.remove('active');
+            });
+            document.getElementById('step' + step).classList.add('active');
+
+            currentStep = step;
+
+            // Update the step colors based on field completion
+            updateStepState();
+        }
+
+        // Function to handle next step button
+        function nextStep() {
+            if (currentStep < formSteps.length) {
+                goToStep(currentStep + 1);
             }
+        }
 
-            // Highlight the current active step
-            if (stepId === currentStep) {
-                step.classList.add('active');
-            } else {
-                step.classList.remove('active');
+        // Function to handle previous step button
+        function prevStep() {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
             }
-        });
-    }
+        }
 
-    // Ensure step 1 is displayed and active when the page loads
-    document.addEventListener("DOMContentLoaded", () => {
-        goToStep(1); // Load the first step on page load
-    });
-
-    // Function to go to a specific step
-    function goToStep(step) {
-        // Hide all form steps
-        document.querySelectorAll('.form-step').forEach((stepElement) => {
-            stepElement.style.display = 'none';
+        // Add event listeners to next and previous buttons
+        document.querySelectorAll(".next-step").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                nextStep();
+            });
         });
 
-        // Show the selected form step
-        document.getElementById('form-step-' + step).style.display = 'block';
-
-        // Update the current step indicator
-        document.querySelectorAll('.step').forEach((stepElement) => {
-            stepElement.classList.remove('active');
+        document.querySelectorAll(".prev-step").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                prevStep();
+            });
         });
-        document.getElementById('step' + step).classList.add('active');
 
-        currentStep = step;
+        // Initial step display and color update
+        goToStep(currentStep);
 
-        // Update the step colors based on field completion
+        // Initial call to update the state of steps
         updateStepState();
-    }
-
-    // Function to handle next step button
-    function nextStep() {
-        if (currentStep < formSteps.length) {
-            goToStep(currentStep + 1);
-        }
-    }
-
-    // Function to handle previous step button
-    function prevStep() {
-        if (currentStep > 1) {
-            goToStep(currentStep - 1);
-        }
-    }
-
-    // Add event listeners to next and previous buttons
-    document.querySelectorAll(".next-step").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            nextStep();
-        });
-    });
-
-    document.querySelectorAll(".prev-step").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            prevStep();
-        });
-    });
-
-    // Initial step display and color update
-    goToStep(currentStep);
-
-    // Initial call to update the state of steps
-    updateStepState();
-    
-    // Function to dynamically add team member fields (for Step 6)
-
-    function addTeamMember() {
-    const container = document.getElementById("team-members-list");
-    const div = document.createElement("div");
-    div.className = "team-member";
-
-    div.innerHTML = `
-        <hr>
-        <h5>Anggota Tim</h5>
-        <div class="form-group mb-3 mt-2">
-            <label>Peran</label>
-            <select name="team_members[${teamIndex}][role]" class="form-control role-select" onchange="updateNidnOrNimLabel(this)">
-                <option value="">Pilih Status Member</option>
-                <option value="Dosen">Dosen</option>
-                <option value="Mahasiswa">Mahasiswa</option>
-                <option value="Staf">Staff Non Dosen</option>
-            </select>
-        </div>
-
-        <div class="form-group mb-3">
-            <label class="nidn-nim-label">NIDN/NIM</label>
-            <input type="text" name="team_members[${teamIndex}][nidn_or_nim]" class="form-control">
-        </div>
-
-        <div class="form-group mb-3">
-            <label>Nama</label>
-            <input type="text" name="team_members[${teamIndex}][name]" class="form-control">
-        </div>
-
-        <div class="form-group mb-3">
-            <label>Fakultas/Kamda</label>
-            <input type="text" name="team_members[${teamIndex}][fakultas_kamda]" class="form-control">
-        </div>
-
-        <div class="form-group mb-3">
-            <label>Prodi</label>
-            <input type="text" name="team_members[${teamIndex}][prodi]" class="form-control">
-        </div>
-
-        <div class="form-group mb-3">
-            <label>Status Keaktifan</label>
-            <input type="text" name="team_members[${teamIndex}][status_keaktifan]" class="form-control">
-        </div>
-
-        <div class="dosen-history" style="display: none;">
-            <label class="form-label">Riwayat Pendanaan Hilirisasi Inovasi</label>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Judul Proposal</th>
-                        <th>Tahun</th>
-                        <th>Nama</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="funding-history-body">
-                    <tr>
-                        <td><input type="text" name="team_members[${teamIndex}][funding_history][${FundingData}][proposal_title]" class="form-control"></td>
-                        <td><input type="text" name="team_members[${teamIndex}][funding_history][${FundingData}][year]" class="form-control"></td>
-                        <td><input type="text" name="team_members[${teamIndex}][funding_history][${FundingData}][name]" class="form-control"></td>
-                        <td>
-                            <select name="team_members[${teamIndex}][funding_history][${FundingData}][status]" class="form-control">
-                                <option value="">Select First</option>
-                                <option value="Ketua">Ketua</option>
-                                <option value="Anggota">Anggota</option>
-                            </select>
-                        </td>
-                        <td><button type="button" class="btn btn-danger remove-funding-row">Hapus</button></td>
-                    </tr>
-                </tbody>
-            </table>
-            <button type="button" class="btn btn-primary add-funding-row mt-2">Tambah Riwayat Pendanaan</button>
-        </div>
-    `;
-
-    container.appendChild(div);
-    initializeFundingHistory(div);
-    // Increment teamIndex after adding a new team member
-    teamIndex++;
-    FundingData++;
-
-    // Initialize the funding row functionality for the newly added team member
-    const addFundingRowButton = div.querySelector('.add-funding-row');
-    function initializeFundingHistory(teamMemberDiv) {
-    const fundingHistoryBody = teamMemberDiv.querySelector('.funding-history-body');
-    teamMemberDiv.querySelector('.add-funding-row').addEventListener('click', () => {
-        const newRow = fundingHistoryBody.querySelector('tr').cloneNode(true);
-        const teamMemberIndex = teamIndex - 1;
-        fundingDataIndex[teamMemberIndex] = (fundingDataIndex[teamMemberIndex] || 0) + 1;
         
-        // Ubah hanya bagian [funding_history][index]
-        Array.from(newRow.querySelectorAll('input, select')).forEach(input => {
-            const name = input.getAttribute('name');
-            if (name && name.includes('[funding_history]')) {
-                input.setAttribute('name', name.replace(/\[funding_history\]\[\d+\]/, `[funding_history][${fundingDataIndex[teamMemberIndex]}]`));
+        // Function to dynamically add team member fields (for Step 6)
+
+        function addTeamMember() {
+        const container = document.getElementById("team-members-list");
+        const div = document.createElement("div");
+        div.className = "team-member";
+
+        div.innerHTML = `
+            <hr>
+            <h5>Anggota Tim</h5>
+            <div class="form-group mb-3 mt-2">
+                <label>Peran</label>
+                <select name="team_members[${teamIndex}][role]" class="form-control role-select" onchange="updateNidnOrNimLabel(this)">
+                    <option value="">Pilih Status Member</option>
+                    <option value="Dosen">Dosen</option>
+                    <option value="Mahasiswa">Mahasiswa</option>
+                    <option value="Staf">Staff Non Dosen</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="nidn-nim-label">NIDN/NIM</label>
+                <input type="text" name="team_members[${teamIndex}][nidn_or_nim]" class="form-control">
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Nama</label>
+                <input type="text" name="team_members[${teamIndex}][name]" class="form-control">
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Fakultas/Kamda</label>
+                <input type="text" name="team_members[${teamIndex}][fakultas_kamda]" class="form-control">
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Prodi</label>
+                <input type="text" name="team_members[${teamIndex}][prodi]" class="form-control">
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Status Keaktifan</label>
+                <input type="text" name="team_members[${teamIndex}][status_keaktifan]" class="form-control">
+            </div>
+
+            <div class="dosen-history" style="display: none;">
+                <label class="form-label">Riwayat Pendanaan Hilirisasi Inovasi</label>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Judul Proposal</th>
+                            <th>Tahun</th>
+                            <th>Nama</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="funding-history-body">
+                        <tr>
+                            <td><input type="text" name="team_members[${teamIndex}][funding_history][${FundingData}][proposal_title]" class="form-control"></td>
+                            <td><input type="text" name="team_members[${teamIndex}][funding_history][${FundingData}][year]" class="form-control"></td>
+                            <td><input type="text" name="team_members[${teamIndex}][funding_history][${FundingData}][name]" class="form-control"></td>
+                            <td>
+                                <select name="team_members[${teamIndex}][funding_history][${FundingData}][status]" class="form-control">
+                                    <option value="">Select First</option>
+                                    <option value="Ketua">Ketua</option>
+                                    <option value="Anggota">Anggota</option>
+                                </select>
+                            </td>
+                            <td><button type="button" class="btn btn-danger remove-funding-row">Hapus</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary add-funding-row mt-2">Tambah Riwayat Pendanaan</button>
+            </div>
+        `;
+
+        container.appendChild(div);
+        initializeFundingHistory(div);
+        // Increment teamIndex after adding a new team member
+        teamIndex++;
+        FundingData++;
+
+        // Initialize the funding row functionality for the newly added team member
+        const addFundingRowButton = div.querySelector('.add-funding-row');
+        function initializeFundingHistory(teamMemberDiv) {
+        const fundingHistoryBody = teamMemberDiv.querySelector('.funding-history-body');
+        teamMemberDiv.querySelector('.add-funding-row').addEventListener('click', () => {
+            const newRow = fundingHistoryBody.querySelector('tr').cloneNode(true);
+            const teamMemberIndex = teamIndex - 1;
+            fundingDataIndex[teamMemberIndex] = (fundingDataIndex[teamMemberIndex] || 0) + 1;
+            
+            // Ubah hanya bagian [funding_history][index]
+            Array.from(newRow.querySelectorAll('input, select')).forEach(input => {
+                const name = input.getAttribute('name');
+                if (name && name.includes('[funding_history]')) {
+                    input.setAttribute('name', name.replace(/\[funding_history\]\[\d+\]/, `[funding_history][${fundingDataIndex[teamMemberIndex]}]`));
+                }
+            });
+            
+            fundingHistoryBody.appendChild(newRow);
+        });
+
+        // Fungsi untuk menghapus baris pendanaan
+        fundingHistoryBody.addEventListener('click', e => {
+            if (e.target.classList.contains('remove-funding-row')) {
+                e.target.closest('tr').remove();
             }
         });
-        
-        fundingHistoryBody.appendChild(newRow);
-    });
-
-    // Fungsi untuk menghapus baris pendanaan
-    fundingHistoryBody.addEventListener('click', e => {
-        if (e.target.classList.contains('remove-funding-row')) {
-            e.target.closest('tr').remove();
-        }
-    });
-}
+    }
 }
 
 
@@ -601,28 +624,7 @@
         }
     }
 
-    function saveDraft() {
-        const form = document.querySelector('form'); // Ensure this is the form element you're submitting
-        const formData = new FormData(form);
-        fetch('/proposals/save-draft', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert('Draft saved successfully!');
-            } else {
-                alert('Failed to save draft.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
+   
 </script>
 <style>
     .step-indicator {
@@ -726,4 +728,13 @@
         });
     @endif
 </script>
+<style>
+    .kotak {
+        display: block;
+        height: 20px;
+        width: 20px;
+        background: #aaa;
+        border-radius: 20px;
+    }
+</style>
 @endpush

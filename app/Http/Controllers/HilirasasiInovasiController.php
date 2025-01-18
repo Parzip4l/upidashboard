@@ -15,6 +15,7 @@ use App\IndustryPartner;
 use App\AdminDocument;
 use App\FundingHistory;
 use App\UserActivityLog;
+use App\PenilaianProposal;
 use DataTables;
 
 class HilirasasiInovasiController extends Controller
@@ -201,6 +202,7 @@ class HilirasasiInovasiController extends Controller
 
     public function show($id)
     {
+        $reviewer = Auth::user()->name;
         $data = Proposal::findOrFail($id);
 
         // Mengambil proposal berikutnya yang bukan berstatus 'draft'
@@ -214,13 +216,17 @@ class HilirasasiInovasiController extends Controller
                                     ->where('status', '!=', 'draft')
                                     ->orderBy('id', 'desc')
                                     ->first();
+
+        $nilai = PenilaianProposal::where('id_proposal', $id)
+                  ->where('reviewer', $reviewer)
+                  ->first();
         
         $logs = UserActivityLog::with('user')
             ->where('proposal_id', $id)
             ->latest()
             ->get();
 
-        return view('single.singleinovasi', compact('data', 'nextProposal', 'previousProposal','logs'));
+        return view('single.singleinovasi', compact('data', 'nextProposal', 'previousProposal','logs','nilai'));
     }
 
 

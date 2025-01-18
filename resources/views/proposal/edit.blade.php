@@ -66,7 +66,7 @@
                             </div>
                         </div>
                         <button type="button" class="btn btn-primary next-step">Next</button>
-                        <button type="button" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
+                        <button type="submit" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
                     </div>
 
                     <div class="form-step" id="form-step-2">
@@ -105,7 +105,7 @@
 
                         <button type="button" class="btn btn-secondary prev-step">Previous</button>
                         <button type="button" class="btn btn-primary next-step">Next</button>
-                        <button type="button" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
+                        <button type="submit" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
                     </div>
 
                     <!-- Step 2: Tingkat Kesiapan Teknologi (TKT) -->
@@ -118,7 +118,7 @@
                                     <input type="text" name="judul_proposal" id="judul_proposal" class="form-control" value="{{$proposal->judul_proposal}}">
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label">Skema</label>
                                     <select name="skema" id="skema" class="form-control">
@@ -130,7 +130,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label">Tema</label>
                                     <select name="tema" id="tema" class="form-control">
@@ -145,7 +145,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="tkt">Tingkat Kesiapan Teknologi (TKT)</label>
                                     <select name="tkt" id="tkt" class="form-control">
@@ -156,53 +156,12 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group mb-3">
-                                    <label class="form-label" for="bukti_tkt">Upload Bukti Pengukuran TKT</label>
-                                    <input type="file" name="bukti_tkt" id="bukti_tkt" class="form-control" onchange="previewFile()">
-
-                                    @if($proposal->bukti_tkt) <!-- Check if the file exists in the database -->
-                                        <div class="mt-2">
-                                            <!-- Download link -->
-                                            <a href="{{ asset('storage/'.$proposal->bukti_tkt) }}" target="_blank" class="btn btn-link mt-2">Download Existing File</a>
-                                            
-                                            <!-- Preview button for the existing file -->
-                                            <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#previewModal">Preview File</button>
-
-                                            <!-- Modal to show preview -->
-                                            <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="previewModalLabel">File Preview</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            @php
-                                                                $fileExtension = pathinfo($proposal->bukti_tkt, PATHINFO_EXTENSION);
-                                                            @endphp
-                                                            <!-- Check if the file is an image or PDF, and display accordingly -->
-                                                            @if(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp']))
-                                                                <img src="{{ asset('storage/'.$proposal->bukti_tkt) }}" alt="Preview" class="img-fluid">
-                                                            @elseif($fileExtension == 'pdf')
-                                                                <embed src="{{ asset('storage/'.$proposal->bukti_tkt) }}" type="application/pdf" width="100%" height="400px">
-                                                            @else
-                                                                <p>No preview available for this file type.</p>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
                             
                         </div>
 
                         <button type="button" class="btn btn-secondary prev-step">Previous</button>
                         <button type="button" class="btn btn-primary next-step">Next</button>
-                        <button type="button" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
+                        <button type="submit" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
                     </div>
 
                     <!-- Step 5: Rencana Anggaran Biaya -->
@@ -236,7 +195,7 @@
                         </div>
                         <button type="button" class="btn btn-secondary prev-step">Previous</button>
                         <button type="button" class="btn btn-primary next-step">Next</button>
-                        <button type="button" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
+                        <button type="submit" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
                     </div>
 
                     <!-- Step 6: Komposisi Tim -->
@@ -327,7 +286,7 @@
 
                         <button type="button" class="btn btn-secondary prev-step">Previous</button>
                         <button type="button" class="btn btn-primary next-step">Next</button>
-                        <button type="button" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
+                        <button type="submit" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
                     </div>
 
                     <!-- Step 7: Mitra Utama -->
@@ -373,17 +332,82 @@
                         </div>
                         <button type="button" class="btn btn-secondary prev-step">Previous</button>
                         <button type="button" class="btn btn-primary next-step">Next</button>
-                        <button type="button" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
+                        <button type="submit" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
                     </div>
 
                     <!-- Step 8: Berkas Administrasi -->
                     <div class="form-step" id="form-step-7">
                         
                     <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="proposal_usulan">1. Roadmap Proposal</label>
+                                <input type="file" name="roadmap" id="proposal_usulan" class="form-control" accept=".pdf" onchange="previewFile('proposal_usulan')" value="{{$proposal->adminDocument->roadmap}}">
+                                @if($proposal->adminDocument->roadmap)
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#previewProposalModal">Preview File</button>
+                                        <div class="modal fade" id="previewProposalModal" tabindex="-1" aria-labelledby="previewProposalModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="previewProposalModalLabel">Proposal Usulan Preview</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <embed src="{{ asset('storage/'.$proposal->adminDocument->roadmap) }}" type="application/pdf" width="100%" height="400px">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="bukti_tkt">Upload Bukti Pengukuran TKT</label>
+                                <input type="file" name="bukti_tkt" id="bukti_tkt" class="form-control" onchange="previewFile()">
+
+                                @if($proposal->bukti_tkt) <!-- Check if the file exists in the database -->
+                                    <div class="mt-2">
+                                        <!-- Download link -->
+                                        <a href="{{ asset('storage/'.$proposal->bukti_tkt) }}" target="_blank" class="btn btn-link mt-2">Download Existing File</a>
+                                        
+                                        <!-- Preview button for the existing file -->
+                                        <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#previewModal">Preview File</button>
+
+                                        <!-- Modal to show preview -->
+                                        <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="previewModalLabel">File Preview</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        @php
+                                                            $fileExtension = pathinfo($proposal->bukti_tkt, PATHINFO_EXTENSION);
+                                                        @endphp
+                                                        <!-- Check if the file is an image or PDF, and display accordingly -->
+                                                        @if(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp']))
+                                                            <img src="{{ asset('storage/'.$proposal->bukti_tkt) }}" alt="Preview" class="img-fluid">
+                                                        @elseif($fileExtension == 'pdf')
+                                                            <embed src="{{ asset('storage/'.$proposal->bukti_tkt) }}" type="application/pdf" width="100%" height="400px">
+                                                        @else
+                                                            <p>No preview available for this file type.</p>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
                         <!-- 1. Proposal Usulan (PDF only) -->
                         <div class="col-md-4">
                             <div class="form-group mb-3">
-                                <label class="form-label" for="proposal_usulan">1. Proposal Usulan (PDF only)</label>
+                                <label class="form-label" for="proposal_usulan">Proposal Usulan (PDF only)</label>
                                 <input type="file" name="proposal_file" id="proposal_usulan" class="form-control" accept=".pdf" onchange="previewFile('proposal_usulan')" value="{{$proposal->adminDocument->proposal_file}}">
                                 @if($proposal->adminDocument->proposal_file)
                                     <div class="mt-2">
@@ -409,7 +433,7 @@
                         <!-- 2. Surat Pernyataan Komitmen Mitra (PDF only) -->
                         <div class="col-md-4">
                             <div class="form-group mb-3">
-                                <label class="form-label" for="komitmen_mitra">2. Surat Pernyataan Komitmen Mitra (PDF only)</label>
+                                <label class="form-label" for="komitmen_mitra">Surat Pernyataan Komitmen Mitra (PDF only)</label>
                                 <input type="file" name="partner_commitment_letter" id="komitmen_mitra" class="form-control" accept=".pdf" onchange="previewFile('komitmen_mitra')" value="{{$proposal->adminDocument->partner_commitment_letter}}">
                                 @if($proposal->adminDocument->partner_commitment_letter)
                                     <div class="mt-2">
@@ -435,7 +459,7 @@
                         <!-- 3. Pernyataan Komitmen Dana Mitra (PDF only) -->
                         <div class="col-md-4">
                             <div class="form-group mb-3">
-                                <label class="form-label" for="komitmen_dana">3. Pernyataan Komitmen Dana Mitra (PDF only)</label>
+                                <label class="form-label" for="komitmen_dana">Pernyataan Komitmen Dana Mitra (PDF only)</label>
                                 <input type="file" name="funding_commitment_letter" id="komitmen_dana" class="form-control" accept=".pdf" onchange="previewFile('komitmen_dana')" value="{{$proposal->adminDocument->funding_commitment_letter}}"> 
                                 @if($proposal->adminDocument->funding_commitment_letter)
                                     <div class="mt-2">
@@ -461,7 +485,7 @@
                         <!-- 4. Surat Pernyataan Tidak Sedang Studi Lanjut dan Tidak Berafiliasi dengan Mitra (PDF only) -->
                         <div class="col-md-4">
                             <div class="form-group mb-3">
-                                <label class="form-label" for="tidak_studi_lanjut">4. Surat Pernyataan Tidak Sedang Studi Lanjut dan Tidak Berafiliasi dengan Mitra (PDF only)</label>
+                                <label class="form-label" for="tidak_studi_lanjut">Surat Pernyataan Tidak Sedang Studi Lanjut dan Tidak Berafiliasi dengan Mitra (PDF only)</label>
                                 <input type="file" name="study_commitment_letter" id="tidak_studi_lanjut" class="form-control" accept=".pdf" onchange="previewFile('tidak_studi_lanjut')" value="{{$proposal->adminDocument->study_commitment_letter}}">
                                 @if($proposal->adminDocument->study_commitment_letter)
                                     <div class="mt-2">
@@ -487,7 +511,7 @@
                         <!-- 5. Rencana Studi Pengembangan (PDF only) -->
                         <div class="col-md-4">
                             <div class="form-group mb-3">
-                                <label class="form-label" for="rencana_studi_pengembangan">5. Formulir Biodata Pengusul (Ketua dan Anggota)</label>
+                                <label class="form-label" for="rencana_studi_pengembangan">Formulir Biodata Pengusul (Ketua dan Anggota)</label>
                                 <input type="file" name="applicant_bio_form" id="rencana_studi_pengembangan" class="form-control" accept=".pdf" onchange="previewFile('rencana_studi_pengembangan')" value="{{$proposal->adminDocument->applicant_bio_form}}">
                                 @if($proposal->adminDocument->applicant_bio_form)
                                     <div class="mt-2">
@@ -513,7 +537,7 @@
                         <!-- 6. Surat Pernyataan Tidak Terikat Beasiswa (PDF only) -->
                         <div class="col-md-4">
                             <div class="form-group mb-3">
-                                <label class="form-label" for="tidak_terikat_beasiswa">6. Formulir Profil Mitra</label>
+                                <label class="form-label" for="tidak_terikat_beasiswa">Formulir Profil Mitra</label>
                                 <input type="file" name="partner_profile_form" id="tidak_terikat_beasiswa" class="form-control" accept=".pdf" onchange="previewFile('tidak_terikat_beasiswa')" value="{{$proposal->adminDocument->partner_profile_form}}">
                                 @if($proposal->adminDocument->partner_profile_form)
                                     <div class="mt-2">
@@ -539,7 +563,7 @@
                         <!-- 7. Rencana Pelaksanaan Penelitian (PDF only) -->
                         <div class="col-md-4">
                             <div class="form-group mb-3">
-                                <label class="form-label" for="rencana_pelaksanaan">7. Surat Pernyataan Kesepakatan Pengusul dan Mitra Melakukan Kerja Sama</label>
+                                <label class="form-label" for="rencana_pelaksanaan">Surat Pernyataan Kesepakatan Pengusul dan Mitra Melakukan Kerja Sama</label>
                                 <input type="file" name="cooperation_agreement" id="rencana_pelaksanaan" class="form-control" accept=".pdf" onchange="previewFile('rencana_pelaksanaan')" value="{{$proposal->adminDocument->cooperation_agreement}}">
                                 @if($proposal->adminDocument->cooperation_agreement)
                                     <div class="mt-2">
@@ -565,7 +589,7 @@
                         <!-- 8. Dokumen Pendukung Lainnya (Excel only) -->
                         <div class="col-md-4">
                             <div class="form-group mb-3">
-                                <label class="form-label" for="rencana_pelaksanaan">8. Perjanjian HKI dengan Mitra</label>
+                                <label class="form-label" for="rencana_pelaksanaan">Perjanjian HKI dengan Mitra</label>
                                 <input type="file" name="hki_agreement" id="hki_agreement" class="form-control" accept=".pdf" onchange="previewFile('hki_agreement')" value="{{$proposal->adminDocument->hki_agreement}}">
                                 @if($proposal->adminDocument->hki_agreement)
                                     <div class="mt-2">
@@ -620,7 +644,7 @@
 
                         <button type="button" class="btn btn-secondary prev-step">Previous</button>
                         <button type="submit" class="btn btn-success">Update Proposal</button>
-                        <button type="button" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
+                        <button type="submit" class="btn btn-warning save-draft text-white" onclick="saveDraft()">Save as Draft</button>
                     </div>
                 </div>
             </form>
@@ -865,29 +889,6 @@
             label.textContent = selectElement.value === 'Mahasiswa' ? 'NIM' : 'NIP';
             dosenHistory.style.display = 'none';
         }
-    }
-
-    function saveDraft() {
-        const form = document.querySelector('form'); // Ensure this is the form element you're submitting
-        const formData = new FormData(form);
-        fetch('/proposals/save-draft', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert('Draft saved successfully!');
-            } else {
-                alert('Failed to save draft.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
     }
 </script>
 <style>

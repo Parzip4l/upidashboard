@@ -9,6 +9,7 @@ use App\TeamComposition;
 use App\IndustryPartner;
 use App\AdminDocument;
 use App\FundingHistory;
+use App\PenilaianProposal;
 use App\Revisi;
 use App\Timeline;
 use Carbon\Carbon;
@@ -56,7 +57,6 @@ class ProposalDataController extends Controller
         // Validasi data yang diterima
         $validatedData = $request->validate([
             'fakultas_kamda' => 'required',
-            'nama_prodi' => 'required',
         ]);
 
         DB::beginTransaction();
@@ -95,6 +95,7 @@ class ProposalDataController extends Controller
                 'mitra_natura' => $request->mitra_natura,
                 'created_by' => $user->id,
                 'status' => $status,
+                'tipe_proposal' => $request->tipe_proposal,
             ]);
 
             // Simpan data kolaborasi
@@ -175,6 +176,7 @@ class ProposalDataController extends Controller
                 'cooperation_agreement' => $request->hasFile('cooperation_agreement') ? $request->file('cooperation_agreement')->store('admin_documents', 'public') : null,
                 'hki_agreement' => $request->hasFile('hki_agreement') ? $request->file('hki_agreement')->store('admin_documents', 'public') : null,
                 'budget_plan_file' => $request->hasFile('budget_plan_file') ? $request->file('budget_plan_file')->store('admin_documents', 'public') : null,
+                'roadmap' => $request->hasFile('roadmap') ? $request->file('roadmap')->store('admin_documents', 'public') : null,
             ]);
             ActivityLogHelper::log(auth()->id(), 'create', 'proposal', 'Membuat proposal baru', $proposal->id);
 
@@ -217,11 +219,16 @@ class ProposalDataController extends Controller
                 TeamComposition::create(array_merge($teamData, ['proposal_id' => $proposal->id]));
             }
         }
+
+        // Ensure $id is correctly set
+        $id = $proposal->id;
+
         ActivityLogHelper::log(auth()->id(), 'draft', 'proposal', 'Memperbarui proposal sebagai draft dengan ID: ' . $id, $id);
 
         // Return a success response
         return response()->json(['status' => 'success', 'message' => 'Draft saved successfully.']);
     }
+
 
     /**
      * Display the list of proposals for the user.
@@ -241,12 +248,17 @@ class ProposalDataController extends Controller
      */
     public function show($id)
     {
+        $userId = auth()->name();
         $proposal = Proposal::with(['collaboration', 'teamCompositions', 'industryPartner', 'adminDocument'])
             ->where('id', $id)
             ->where('id', Auth::id())
             ->firstOrFail();
+        
+        $nilai = PenilaianProposal::where('id_proposal', $id)
+                  ->where('reviewer', $userId)
+                  ->first();
 
-        return view('proposal.show', compact('proposal'));
+        return view('proposal.show', compact('proposal','nilai'));
     }
 
 
@@ -266,19 +278,11 @@ class ProposalDataController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = Auth::user();
-        
+        $user = Auth::user();   
         
         // Validate the incoming request
         $validatedData = $request->validate([
             'fakultas_kamda' => 'required',
-            'nama_prodi' => 'required',
-            'ketua_inovator' => 'required',
-            'nama_industri' => 'required',
-            'skema' => 'required',
-            'tema' => 'required',
-            'tkt' => 'required',
-            'team_members' => 'required',
         ]);
 
         DB::beginTransaction();
@@ -307,7 +311,6 @@ class ProposalDataController extends Controller
                 $updateStatus = Timeline::where('proposal_id', $proposal->id)->first();
 
                 if ($updateStatus) {
-
                     $updateStatus->revisi_upload = 1;
                     $updateStatus->save();
                 }
@@ -324,8 +327,7 @@ class ProposalDataController extends Controller
                     $request->durasi_pelaksanaan &&
                     $request->dana_hilirisasi &&
                     $request->mitra_tunai &&
-                    $request->mitra_natura &&
-                    $request->hasFile('bukti_tkt')
+                    $request->mitra_natura
                 ) ? 'submited' : 'draft';
             }
             
@@ -373,11 +375,11 @@ class ProposalDataController extends Controller
             ]);
 
             // Update the team members in the team_compositions table
-            foreach ($validatedData['team_members'] as $member) {
+            foreach ($request->team_members as $member) {
                 $teamMember = TeamComposition::where('proposal_id', $proposal->id)
                     ->where('identifier', $member['identifier'])
                     ->first();
-
+        
                 if ($teamMember) {
                     $teamMember->update([
                         'member_type' => $member['member_type'],
@@ -388,7 +390,7 @@ class ProposalDataController extends Controller
                         'active_status' => $member['active_status'],
                     ]);
                 } else {
-                    // If no existing team member found, create a new one
+                    // Jika anggota tim belum ada, buat baru
                     $teamMember = TeamComposition::create([
                         'proposal_id' => $proposal->id,
                         'member_type' => $member['member_type'],
@@ -399,14 +401,14 @@ class ProposalDataController extends Controller
                         'active_status' => $member['active_status'],
                     ]);
                 }
-
-                // Handle funding history if available
-                if (isset($member['funding_history'])) {
+        
+                // Tangani funding history jika ada
+                if (isset($member['funding_history']) && is_array($member['funding_history'])) {
                     foreach ($member['funding_history'] as $history) {
                         $fundingHistory = FundingHistory::where('team_composition_id', $teamMember->id)
                             ->where('proposal_title', $history['proposal_title'])
                             ->first();
-
+        
                         if ($fundingHistory) {
                             $fundingHistory->update([
                                 'year' => $history['year'],
@@ -425,6 +427,7 @@ class ProposalDataController extends Controller
                     }
                 }
             }
+            
 
             // Update or create admin documents
             $documentData = $proposal->adminDocument;
@@ -438,6 +441,7 @@ class ProposalDataController extends Controller
                 'cooperation_agreement' => $request->hasFile('cooperation_agreement') ? $request->file('cooperation_agreement')->store('admin_documents', 'public') : $documentData->cooperation_agreement,
                 'hki_agreement' => $request->hasFile('hki_agreement') ? $request->file('hki_agreement')->store('admin_documents', 'public') : $documentData->hki_agreement,
                 'budget_plan_file' => $request->hasFile('budget_plan_file') ? $request->file('budget_plan_file')->store('admin_documents', 'public') : $documentData->budget_plan_file,
+                'roadmap' => $request->hasFile('roadmap') ? $request->file('roadmap')->store('admin_documents', 'public') : $documentData->roadmap,
             ]);
 
             ActivityLogHelper::log(
@@ -498,18 +502,59 @@ class ProposalDataController extends Controller
         }
 
         // Update the proposal's status to 'revisi'
-        $proposal->status = 'revisi';
+        $proposal->status = 'reject';
         $proposal->save();
 
         $updateStatus = Timeline::where('proposal_id', $proposal->id)->first();
 
         if ($updateStatus) {
 
-            $updateStatus->revisi = 1;
+            $updateStatus->revisi = 0;
             $updateStatus->save();
         }
 
         // Return a JSON response
         return response()->json(['success' => true, 'message' => 'Status updated to revisi and feedback saved']);
+    }
+
+    public function penilaian(Request $request)
+    {
+        $reviewer = Auth::user()->name;
+        try {
+    
+            // Hitung nilai total berdasarkan bobot
+            $nilai_total = 
+                ($request->tujuan_sasaran * 0.10) +
+                ($request->metodologi * 0.05) +
+                ($request->jadwal_tahapan * 0.05) +
+                ($request->inovasi * 0.15) +
+                ($request->keberlanjutan_program * 0.15) +
+                ($request->keberlanjutan * 0.15) +
+                ($request->dampak_sosial_ekonomi * 0.15) +
+                ($request->implementasi * 0.10) +
+                ($request->sdm * 0.05) +
+                ($request->anggaran * 0.05);
+    
+            // Simpan data ke database
+            $proposal = new PenilaianProposal(); // Sesuaikan model dengan nama Anda
+            $proposal->id_proposal = $request->id_proposal;
+            $proposal->tujuan_sasaran = $request->tujuan_sasaran;
+            $proposal->metodologi = $request->metodologi;
+            $proposal->jadwal_tahapan = $request->jadwal_tahapan;
+            $proposal->inovasi = $request->inovasi;
+            $proposal->keberlanjutan_program = $request->keberlanjutan_program;
+            $proposal->dampak_sosial_ekonomi = $request->keberlanjutan;
+            $proposal->capaian_iku = $request->dampak_sosial_ekonomi;
+            $proposal->implementasi = $request->implementasi;
+            $proposal->sdm = $request->sdm;
+            $proposal->anggaran = $request->anggaran;
+            $proposal->reviewer = $reviewer;
+            $proposal->nilai_total = $nilai_total; // Simpan nilai total
+            $proposal->save();
+    
+            return redirect()->back()->with('success', 'Proposal Berhasil Dinilai!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

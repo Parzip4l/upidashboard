@@ -65,6 +65,9 @@ Route::group(['middleware' => ['role:admin|reviewer|superadmin']], function () {
     })->name('hilirasasi-inovasi.export');
 });
 
+Route::group(['middleware' => ['role:reviewer']], function () {
+    Route::post('/submit-nilai', [ProposalDataController::class, 'penilaian'])->name('proposal.nilaidata');
+});
 
 Route::group(['middleware' => ['role:user']], function () {
     Route::get('/pages.sample', function () {

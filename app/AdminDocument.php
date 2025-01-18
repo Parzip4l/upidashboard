@@ -19,7 +19,8 @@ class AdminDocument extends Model
         'partner_profile_form',
         'cooperation_agreement',
         'hki_agreement',
-        'budget_plan_file'
+        'budget_plan_file',
+        'roadmap'
     ];
 
     public function proposal()

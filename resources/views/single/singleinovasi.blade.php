@@ -13,7 +13,18 @@
 @php 
     $user = App\User::where('id',$data->user_id)->first();
 @endphp
-
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 <!-- Custom Nav Single -->
 <div class="row">
     <div class="col-md-12">
@@ -21,6 +32,16 @@
             <div class="nav-item-custom me-2">
                 <a href="#" class="btn btn-sm btn-custom btn-primary active" data-content="konsep">Konsep</a>
             </div>
+            @if(Auth::user()->role == 'admin' && $data->status === 'submited')
+            <div class="nav-item-custom me-2">
+                <a href="#" class="btn btn-sm btn-custom btn-primary" data-content="adm">Cek Administrasi</a>
+            </div>
+            @endif
+            @if(Auth::user()->role == 'reviewer' && $data->status === 'review')
+            <div class="nav-item-custom me-2">
+                <a href="#" class="btn btn-sm btn-custom btn-primary" data-content="nilai">Penilaian</a>
+            </div>
+            @endif
             <div class="nav-item-custom me-2">
                 <a href="#" class="btn btn-sm btn-custom btn-primary" data-content="pra-kontrak">Pra Kontrak</a>
             </div>
@@ -97,7 +118,7 @@
                                                 Skema tidak diketahui
                                             @endif
                                         </p>
-                                        <p>TKT : {{$data->tkt}} - <a href="{{ asset('storage/' .$data->bukti_tkt) }}" target="_blank">Download Bukti TKT</a></p>
+                                        <p>TKT : {{$data->tkt}}</p>
                                     </div>
                                     <div class="data-2">
                                         <span class="badge rounded-pill bg-primary">
@@ -123,6 +144,7 @@
                                     </div>
                                     
                                 </div>
+                                @if(Auth::user()->role == 'admin')
                                 <div class="head-details-wrap d-flex justify-content-between">
                                     <div class="component-1">
                                         <h6>{{$data->ketua_inovator}}</h6>
@@ -132,7 +154,7 @@
                                         <h6 class="mb-1">{{$data->nama_industri}}</h6>
                                     </div>
                                 </div>
-                                
+                                @endif
                             </div>
                         </div>
 
@@ -166,6 +188,7 @@
             </div>
 
             <!-- Kolaborasi -->
+            @if(Auth::user()->role == 'admin')
             <div class="card mt-4">
                 <div class="card-body">
                     <div class="card-title-head-custom d-flex justify-content-between">
@@ -269,8 +292,10 @@
                     </div>
                 </div>
             </div>
+            @endif
 
             <!-- Mitra -->
+            @if(Auth::user()->role == 'admin')
             <div class="card mt-4">
                 @php
                     $mitra = App\IndustryPartner::where('proposal_id',$data->id)->first();
@@ -393,6 +418,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
             <!-- Berkas Proposal Card -->
             <div class="card mt-4">
@@ -413,6 +439,37 @@
                                     $document = App\AdminDocument::where('proposal_id',$data->id)->first();
                                 @endphp
                                 <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <div class="card">
+                                            <div class="card-body d-flex justify-content-between">
+                                                <div class="file-data me-2">
+                                                    <a href="{{ asset('storage/' .$document->roadmap) }}" target="_blank" class="d-flex">
+                                                        <img src="{{ asset('/pdfdocs.png') }}" alt="" style="max-width :100%;" class="me-2">
+                                                        <p class="align-self-center text-dark">Roadmap Proposal</p>
+                                                    </a>
+                                                </div>
+                                                <div class="docs-title align-self-center text-center">
+                                                    <a href="{{ asset('storage/' .$document->roadmap) }}" target="_blank" class="text-dark"><i class="" data-feather="eye"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <div class="card">
+                                            <div class="card-body d-flex justify-content-between">
+                                                <div class="file-data me-2">
+                                                    <a href="{{ asset('storage/' .$document->proposal_file) }}" target="_blank" class="d-flex">
+                                                        <img src="{{ asset('/pdfdocs.png') }}" alt="" style="max-width :100%;" class="me-2">
+                                                        <p class="align-self-center text-dark">Proposal usulan</p>
+                                                    </a>
+                                                </div>
+                                                <div class="docs-title align-self-center text-center">
+                                                    <a href="{{ asset('storage/' .$document->proposal_file) }}" target="_blank" class="text-dark"><i class="" data-feather="eye"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @if(Auth::user()->role == 'admin')
                                     <div class="col-md-12 mb-3">
                                         <div class="card">
                                             <div class="card-body d-flex justify-content-between">
@@ -536,6 +593,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                                     <div class="col-md-12 mb-3">
                                         <div class="card">
                                             <div class="card-body d-flex justify-content-between">
@@ -571,73 +629,8 @@
                     </div>
                 </div>
             </div>
-            @if($data->status === 'submited' && Auth::user()->role !== 'reviewer')
-            <div class="card mt-4">
-                <div class="card-body">
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="lengkapdata">
-                        <label class="form-check-label" for="lengkapdata">Apakah Data Sudah Lengkap?</label>
-                    </div>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="sesuaidata">
-                        <label class="form-check-label" for="sesuaidata">Apakah Data Sudah Sesuai?</label>
-                    </div>
-                    <a href="#" class="btn btn-primary btn-sm disabled" id="lanjutkanBtn" disabled>Lanjutkan Proses</a>
-                </div>
-            </div>
-            @endif
-
-            @if($data->status === 'waiting-verifikasi-revisi' && Auth::user()->role === 'reviewer')
-            <div class="card mt-4">
-                <div class="card-body">
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="lengkapdata">
-                        <label class="form-check-label" for="lengkapdata">Apakah Data Revisi Sudah Lengkap?</label>
-                    </div>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="sesuaidata">
-                        <label class="form-check-label" for="sesuaidata">Tetapkan Sebagai Pemenang?</label>
-                    </div>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="revisi">
-                        <label class="form-check-label" for="revisi">Revisi Diperlukan</label>
-                    </div>
-                    <a href="#" class="btn btn-warning btn-sm disabled" id="revisiBtn" disabled>Revisi</a>
-                    <a href="#" class="btn btn-primary btn-sm disabled" id="lanjutkanBtn" disabled>Lanjutkan Proses</a>
-                </div>
-            </div>
-            @endif
-
-            @if (Auth::user()->role === 'reviewer' &&  $data->status === 'submited' ||  $data->status === 'review')
-            <div class="card mt-4">
-                <div class="card-body">
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="lengkapdata">
-                        <label class="form-check-label" for="lengkapdata">Apakah Data Sudah Lengkap?</label>
-                    </div>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="sesuaidata">
-                        <label class="form-check-label" for="sesuaidata">Apakah Data Sudah Sesuai?</label>
-                    </div>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="revisi">
-                        <label class="form-check-label" for="revisi">Revisi Diperlukan</label>
-                    </div>
-                    <a href="#" class="btn btn-primary btn-sm disabled" id="lanjutkanBtn" disabled>Lanjutkan Proses</a>
-                    <a href="#" class="btn btn-warning btn-sm disabled" id="revisiBtn" disabled>Revisi</a>
-                </div>
-            </div>
-            @endif
-
-            <div class="card mt-2">
-                <div class="card-body">
-                    <div id="feedbackSection" class="mt-3" style="display:none;">
-                        <label for="feedbackText">Catatan Revisi / Komentar:</label>
-                        <textarea id="feedbackText" class="form-control" rows="3" placeholder="Masukkan catatan revisi/komentar..."></textarea>
-                    </div>
-                </div>
-            </div>
         </div>
+        @if(Auth::user()->role == 'admin')
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
@@ -693,8 +686,328 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </div>
+
+<div id="nilai" class="content-section" style="display: none;">
+    <div class="card">
+        <div class="card-body">
+            <div class="nilai-wrap">
+                <div class="nilai-content">
+                    @if (!$nilai)
+                    <form id="rubrikForm" action="{{route('proposal.nilaidata')}}" method="POST" onsubmit="return confirmSubmission(event)">
+                        @csrf
+                        <div class="table-responsive">
+                            <input type="hidden" name="id_proposal" value="{{$data->id}}">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Aspek Penilaian</th>
+                                        <th>Indikator</th>
+                                        <th>Bobot (%)</th>
+                                        <th>Skor (1-4)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="3">Kualitas Proposal</td>
+                                        <td>Kejelasan Tujuan dan Sasaran</td>
+                                        <td>10%</td>
+                                        <td>
+                                            <input 
+                                                type="number"
+                                                class="form-control mb-2" 
+                                                name="tujuan_sasaran" 
+                                                min="1" 
+                                                max="4" 
+                                                required 
+                                                oninput="if(this.value > 4) this.value = 4; if(this.value < 1) this.value = 1;"
+                                            >
+                                            <div>
+                                                <small>1: Tujuan dan sasaran kurang jelas, tidak relevan</small><br>
+                                                <small>2: Tujuan dan sasaran kurang jelas</small><br>
+                                                <small>3: Tujuan dan sasaran cukup jelas, relevan</small><br>
+                                                <small>4: Tujuan dan sasaran sangat jelas, relevan</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kejelasan Metodologi</td>
+                                        <td>5%</td>
+                                        <td>
+                                            <input 
+                                                type="number"
+                                                class="form-control mb-2" 
+                                                name="metodologi" 
+                                                min="1" 
+                                                max="4" 
+                                                required 
+                                                oninput="if(this.value > 4) this.value = 4; if(this.value < 1) this.value = 1;"
+                                            >
+                                            <div>
+                                                <small>1: Metodologi tidak jelas dan tidak sesuai tujuan</small><br>
+                                                <small>2: Metodologi cukup jelas namun kurang sesuai</small><br>
+                                                <small>3: Metodologi jelas dan sesuai tujuan</small><br>
+                                                <small>4: Metodologi sangat jelas dan sesuai tujuan</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kejelasan Jadwal dan Tahapan Kegiatan</td>
+                                        <td>5%</td>
+                                        <td>
+                                            <input 
+                                                type="number"
+                                                class="form-control mb-2" 
+                                                name="jadwal_tahapan" 
+                                                min="1" 
+                                                max="4" 
+                                                required 
+                                                oninput="if(this.value > 4) this.value = 4; if(this.value < 1) this.value = 1;"
+                                            >
+                                            <div>
+                                                <small>1: Jadwal dan tahapan kurang jelas</small><br>
+                                                <small>2: Jadwal dan tahapan cukup jelas namun tidak terperinci</small><br>
+                                                <small>3: Jadwal dan tahapan cukup terperinci</small><br>
+                                                <small>4: Jadwal dan tahapan sangat jelas dan terperinci</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2">Inovasi dan Keberlanjutan</td>
+                                        <td>Kebaruan Inovasi</td>
+                                        <td>15%</td>
+                                        <td>
+                                            <input 
+                                                type="number"
+                                                class="form-control mb-2" 
+                                                name="inovasi" 
+                                                min="1" 
+                                                max="4" 
+                                                required 
+                                                oninput="if(this.value > 4) this.value = 4; if(this.value < 1) this.value = 1;"
+                                            >
+                                            <div>
+                                                <small>1: Inovasi tidak baru dan tidak memiliki potensi</small><br>
+                                                <small>2: Inovasi kurang baru dan kurang memiliki potensi</small><br>
+                                                <small>3: Inovasi cukup baru dan berpotensi</small><br>
+                                                <small>4: Inovasi sangat baru dan sangat berpotensi</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Potensi Keberlanjutan Program</td>
+                                        <td>15%</td>
+                                        <td>
+                                            <input 
+                                                type="number"
+                                                class="form-control mb-2" 
+                                                name="keberlanjutan_program" 
+                                                min="1" 
+                                                max="4" 
+                                                required 
+                                                oninput="if(this.value > 4) this.value = 4; if(this.value < 1) this.value = 1;"
+                                            >
+                                            <div>
+                                                <small>1: Program tidak berkelanjutan dan tidak dapat diterapkan dalam jangka panjang</small><br>
+                                                <small>2: Program cukup berkelanjutan namun hanya untuk jangka pendek</small><br>
+                                                <small>3: Program cukup berkelanjutan dan dapat diterapkan jangka menengah</small><br>
+                                                <small>4: Program sangat berkelanjutan dan dapat diterapkan jangka panjang</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2">Potensi Dampak Program</td>
+                                        <td>Potensi Dampak Sosial dan/atau Ekonomi</td>
+                                        <td>15%</td>
+                                        <td>
+                                            <input 
+                                                type="number"
+                                                class="form-control mb-2" 
+                                                name="keberlanjutan" 
+                                                min="1" 
+                                                max="4" 
+                                                required 
+                                                oninput="if(this.value > 4) this.value = 4; if(this.value < 1) this.value = 1;"
+                                            >
+                                            <div>
+                                                <small>1: Dampak sosial dan/atau ekonomi tidak signifikan dan negatif.</small><br>
+                                                <small>2: Dampak sosial dan/atau ekonomi cukup signifikan namun kurang positif. </small><br>
+                                                <small>3: Dampak sosial dan/atau ekonomi signifikan dan cukup positif.</small><br>
+                                                <small>4: Dampak sosial dan/atau ekonomi sangat signifikan dan positif</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Potensi Dampak terhadap Capaian IKU</td>
+                                        <td>15%</td>
+                                        <td>
+                                            <input 
+                                                type="number"
+                                                class="form-control mb-2" 
+                                                name="dampak_sosial_ekonomi" 
+                                                min="1" 
+                                                max="4" 
+                                                required 
+                                                oninput="if(this.value > 4) this.value = 4; if(this.value < 1) this.value = 1;"
+                                            >
+                                            <div>
+                                                <small>1: Dampak terhadap capaian IKU tidak signifikan dan negatif.</small><br>
+                                                <small>2: Dampak terhadap capaian IKU cukup signifikan namun kurang </small><br>
+                                                <small>3: Dampak terhadap capaian IKU signifikan dan cukup positif.<br>                                                </small><br>
+                                                <small>4: Dampak terhadap capaian IKU sangat signifikan dan positif.</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2">Kelayakan Implementasi</td>
+                                        <td>Kelayakan Implementasi</td>
+                                        <td>10%</td>
+                                        <td>
+                                            <input 
+                                                type="number"
+                                                class="form-control mb-2" 
+                                                name="implementasi" 
+                                                min="1" 
+                                                max="4" 
+                                                required 
+                                                oninput="if(this.value > 4) this.value = 4; if(this.value < 1) this.value = 1;"
+                                            >
+                                            <div>
+                                                <small>1: Implementasi tidak layak dan tidak realistis</small><br>
+                                                <small>2: Implementasi kurang layak dan realistis</small><br>
+                                                <small>3: Implementasi cukup layak dan realistis</small><br>
+                                                <small>4: Implementasi sangat layak dan realistis</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sumber Daya Manusia</td>
+                                        <td>5%</td>
+                                        <td>
+                                            <input 
+                                                type="number"
+                                                class="form-control mb-2" 
+                                                name="sdm" 
+                                                min="1" 
+                                                max="4" 
+                                                required 
+                                                oninput="if(this.value > 4) this.value = 4; if(this.value < 1) this.value = 1;"
+                                            >
+                                            <div>
+                                                <small>1: Sumber daya manusia yang terlibat kurang memadai dengan kompetensi yang kurang relevan</small><br>
+                                                <small>2: Sumber daya manusia yang terlibat memadai; di antara tim pengusul memiliki kompetensi yang cukup relevan.                                                </small><br>
+                                                <small>3: Sumber daya manusia yang terlibat memadai; di antara tim pengusul memiliki kompetensi yang relevan.</small><br>
+                                                <small>4: Sumber daya manusia yang terlibat sangat memadai; ketua pengusul dan anggota memiliki kompetensi yang relevan.                                                </small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rencana Anggaran</td>
+                                        <td>Kesesuaian Anggaran</td>
+                                        <td>5%</td>
+                                        <td>
+                                            <input 
+                                                type="number"
+                                                class="form-control mb-2" 
+                                                name="anggaran" 
+                                                min="1" 
+                                                max="4" 
+                                                required 
+                                                oninput="if(this.value > 4) this.value = 4; if(this.value < 1) this.value = 1;"
+                                            >
+                                            <div>
+                                                <small>1: Anggaran tidak sesuai dan tidak terperinci.</small><br>
+                                                <small>2: Anggaran cukup sesuai namun kurang terperinci.</small><br>
+                                                <small>3: Anggaran cukup sesuai dan terperinci.</small><br>
+                                                <small>4: Anggaran sangat sesuai dengan SBU, rasional, dan terperinci.</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <br>
+                        <button type="submit" class="btn btn-success btn-sm">Submit Penilaian</button>
+                    </form>
+                    @else
+                    <p class="text-success">Anda sudah memberikan penilaian untuk proposal ini.</p>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Aspek Penilaian</th>
+                                    <th>Bobot (%)</th>
+                                    <th>Skor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Kejelasan Tujuan dan Sasaran</td>
+                                    <td>10%</td>
+                                    <td>{{ $nilai->tujuan_sasaran }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Kejelasan Metodologi</td>
+                                    <td>5%</td>
+                                    <td>{{ $nilai->metodologi }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Kejelasan Jadwal dan Tahapan Kegiatan</td>
+                                    <td>5%</td>
+                                    <td>{{ $nilai->jadwal_tahapan }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Kebaruan Inovasi</td>
+                                    <td>15%</td>
+                                    <td>{{ $nilai->inovasi }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Potensi Keberlanjutan Program</td>
+                                    <td>15%</td>
+                                    <td>{{ $nilai->keberlanjutan_program }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Potensi Dampak Sosial dan/atau Ekonomi</td>
+                                    <td>15%</td>
+                                    <td>{{ $nilai->dampak_sosial_ekonomi }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Potensi Dampak terhadap Capaian IKU</td>
+                                    <td>15%</td>
+                                    <td>{{ $nilai->dampak_sosial_ekonomi }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Kelayakan Implementasi</td>
+                                    <td>10%</td>
+                                    <td>{{ $nilai->implementasi }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Sumber Daya Manusia</td>
+                                    <td>5%</td>
+                                    <td>{{ $nilai->sdm }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Kesesuaian Anggaran</td>
+                                    <td>5%</td>
+                                    <td>{{ $nilai->anggaran }}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2">Total Nilai</th>
+                                    <th>{{ $nilai->nilai_total }}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="pra-kontrak" class="content-section" style="display: none;">
     <div class="card">
         <div class="card-body">
@@ -715,6 +1028,133 @@
                 <div class="draft-content">
                     <img src="{{ asset('/proposaldraft.png') }}" alt="" style="max-width : 50%;">
                     <h3 class="mt-4">Data Tidak Tersedia</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="adm" class="content-section" style="display: none;">
+    <div class="card mt-4">
+        <div class="card-body">
+            <div class="card-title-head-custom d-flex justify-content-between">
+                <div class="judul align-self-center">
+                    <h6 class="card-title align-self-center mb-0">Berkas Administrasi</h6>
+                </div>
+                <div class="tombol-edit-wrap d-flex align-self-center">
+                    <button class="btn btn-sm btn-outline-secondary me-2 minimizeButton" data-target="contentFiles">Hide Data</button>
+                    <button class="btn btn-sm btn-outline-secondary me-2 maximizeButton" data-target="contentFiles" style="display: none;">Show Data</button>
+                </div>
+            </div>
+            <div id="contentFiles" class="content">
+                <div class="data-content mt-4">
+                    <div class="details-data-proposal">
+                        @php
+                            $document = App\AdminDocument::where('proposal_id',$data->id)->first();
+                        @endphp
+                        <div class="row">
+                            @php
+                                $documents = [
+                                    [
+                                        'file' => $document->roadmap,
+                                        'label' => 'Roadmap Proposal',
+                                        'icon' => '/pdfdocs.png',
+                                    ],
+                                    [
+                                        'file' => $data->bukti_tkt,
+                                        'label' => 'Bukti TKT',
+                                        'icon' => '/pdfdocs.png',
+                                    ],
+                                    [
+                                        'file' => $document->proposal_file,
+                                        'label' => 'Proposal usulan',
+                                        'icon' => '/pdfdocs.png',
+                                    ],
+                                    [
+                                        'file' => $document->partner_commitment_letter,
+                                        'label' => 'Surat Pernyataan Komitmen Mitra',
+                                        'icon' => '/pdfdocs.png',
+                                    ],
+                                    [
+                                        'file' => $document->funding_commitment_letter,
+                                        'label' => 'Pernyataan Komitmen Dana Mitra',
+                                        'icon' => '/pdfdocs.png',
+                                    ],
+                                    [
+                                        'file' => $document->study_commitment_letter,
+                                        'label' => 'Surat Pernyataan Tidak Sedang Studi Lanjut dan Tidak Berafiliasi dengan Mitra (Ketua dan Anggota Wajib)',
+                                        'icon' => '/pdfdocs.png',
+                                    ],
+                                    [
+                                        'file' => $document->applicant_bio_form,
+                                        'label' => 'Formulir Biodata Pengusul (Ketua dan Anggota)',
+                                        'icon' => '/pdfdocs.png',
+                                    ],
+                                    [
+                                        'file' => $document->partner_profile_form,
+                                        'label' => 'Formulir Profil Mitra',
+                                        'icon' => '/pdfdocs.png',
+                                    ],
+                                    [
+                                        'file' => $document->cooperation_agreement,
+                                        'label' => 'Surat Pernyataan Kesepakatan Pengusul dan Mitra Melakukan Kerja Sama',
+                                        'icon' => '/pdfdocs.png',
+                                    ],
+                                    [
+                                        'file' => $document->hki_agreement,
+                                        'label' => 'Perjanjian HKI dengan Mitra',
+                                        'icon' => '/pdfdocs.png',
+                                    ],
+                                    [
+                                        'file' => $document->budget_plan_file,
+                                        'label' => 'Rencana Anggaran Biaya berupa file excel.',
+                                        'icon' => '/exceldocs.png',
+                                    ],
+                                ];
+                            @endphp
+
+                            @foreach ($documents as $doc)
+                            <div class="col-md-12 mb-3">
+                                <div class="card card-doc">
+                                    <div class="card-body d-flex justify-content-between">
+                                        <div class="file-data d-flex align-items-center">
+                                            <div class="form-check me-2">
+                                                <input class="form-check-input lengkapdata-checkbox" type="checkbox" id="checkbox-{{ $loop->index }}">
+                                            </div>
+                                            <a href="{{ asset('storage/' . $doc['file']) }}" target="_blank" class="d-flex">
+                                                <img src="{{ asset($doc['icon']) }}" alt="" style="max-width: 100%;" class="me-2">
+                                                <p class="align-self-center text-dark">{{ $doc['label'] }}</p>
+                                            </a>
+                                        </div>
+                                        <div class="docs-title align-self-center text-center">
+                                            <a href="{{ asset('storage/' . $doc['file']) }}" target="_blank" class="text-dark">
+                                                <i class="" data-feather="eye"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        <div class="mt-4">
+                            <button id="btn-continue" class="btn btn-primary" disabled>Lanjutkan Proses</button>
+                            <button id="btn-reject" class="btn btn-danger">Tolak Proposal</button>
+                        </div>
+                        <div class="modal fade" id="excelPreviewModal" tabindex="-1" aria-labelledby="excelPreviewModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="excelPreviewModalLabel">Preview Rencana Anggaran Biaya</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Container where Excel content will be rendered -->
+                                        <div id="excel-preview-container"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1029,114 +1469,163 @@
     }
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const lengkapdataCheckbox = document.getElementById('lengkapdata');
-    const sesuaidataCheckbox = document.getElementById('sesuaidata');
-    const revisiCheckbox = document.getElementById('revisi');
-    const lanjutkanBtn = document.getElementById('lanjutkanBtn');
-    const revisiBtn = document.getElementById('revisiBtn');
-    const feedbackSection = document.getElementById('feedbackSection');
-    const feedbackText = document.getElementById('feedbackText');
-    const proposalId = document.getElementById('IDProposal')?.value; // Optional chaining in case the element is not present
+    var proposalId = @json($data->id);
+    // Fungsi untuk memperbarui status
+function updateProposalStatus(proposalId, status, feedback = '') {
+    let swalText = status === 'review' 
+        ? 'Anda yakin ingin melanjutkan proses?'
+        : 'Anda yakin ingin menolak proposal?';
 
-    function updateButtonState() {
-        if (lengkapdataCheckbox.checked && sesuaidataCheckbox.checked) {
-            lanjutkanBtn.classList.remove('disabled');
-            lanjutkanBtn.removeAttribute('disabled');
-        } else {
-            lanjutkanBtn.classList.add('disabled');
-            lanjutkanBtn.setAttribute('disabled', true);
-        }
+    let swalTitle = status === 'review' 
+        ? 'Apakah Anda yakin melanjutkan?'
+        : 'Apakah Anda yakin menolak?';
 
-        if (revisiCheckbox && revisiCheckbox.checked) {
-            revisiBtn.classList.remove('disabled');
-            revisiBtn.removeAttribute('disabled');
-            feedbackSection.style.display = 'block';
-        } else {
-            revisiBtn.classList.add('disabled');
-            revisiBtn.setAttribute('disabled', true);
-            feedbackSection.style.display = 'none';
-        }
-    }
+    Swal.fire({
+        title: swalTitle,
+        text: swalText,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: status === 'review' ? 'Ya, lanjutkan' : 'Ya, tolak',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let url = status === 'review' 
+                ? `/update-status-review/${proposalId}` 
+                : `/update-status-revisi/${proposalId}`;
 
-    if (lengkapdataCheckbox) lengkapdataCheckbox.addEventListener('change', updateButtonState);
-    if (sesuaidataCheckbox) sesuaidataCheckbox.addEventListener('change', updateButtonState);
-    if (revisiCheckbox) revisiCheckbox.addEventListener('change', updateButtonState);
+            let data = {
+                feedback: feedback // hanya mengirim feedback jika statusnya 'revisi'
+            };
 
-    lanjutkanBtn?.addEventListener('click', function (e) {
-        e.preventDefault();
-        if (!lanjutkanBtn.classList.contains('disabled')) {
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: 'Anda yakin ingin melanjutkan proses?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, lanjutkan',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/update-status-review/${proposalId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        },
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                Swal.fire('Berhasil!', 'Status berhasil diubah menjadi review.', 'success')
-                                    .then(() => location.reload());
-                            } else {
-                                Swal.fire('Gagal!', 'Terjadi kesalahan, status tidak diubah.', 'error');
-                            }
-                        })
-                        .catch(error => Swal.fire('Gagal!', error.message, 'error'));
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Berhasil!', data.message, 'success')
+                        .then(() => location.reload());
+                } else {
+                    Swal.fire('Gagal!', 'Terjadi kesalahan, status tidak diubah.', 'error');
                 }
-            });
+            })
+            .catch(error => Swal.fire('Gagal!', error.message, 'error'));
         }
     });
+}
 
-    revisiBtn?.addEventListener('click', function (e) {
-        e.preventDefault();
-        if (!revisiBtn.classList.contains('disabled')) {
-            const feedback = feedbackText.value.trim();
-            if (!feedback) {
-                Swal.fire('Perhatian!', 'Silakan masukkan catatan revisi.', 'warning');
-                return;
+// Event listener untuk tombol lanjutkan
+const lanjutkanBtn = document.getElementById('btn-continue');
+lanjutkanBtn?.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (!lanjutkanBtn.classList.contains('disabled')) {
+        updateProposalStatus(proposalId, 'review');
+    }
+});
+
+// Event listener untuk tombol tolak
+const rejectBtn = document.getElementById('btn-reject');
+rejectBtn?.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (!rejectBtn.classList.contains('disabled')) {
+        // Menampilkan modal untuk memasukkan catatan
+        Swal.fire({
+            title: 'Masukkan catatan untuk revisi',
+            input: 'textarea',
+            inputLabel: 'Komentar atau catatan',
+            inputPlaceholder: 'Tuliskan komentar Anda di sini...',
+            showCancelButton: true,
+            confirmButtonText: 'Kirim',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const feedback = result.value;
+                updateProposalStatus(proposalId, 'revisi', feedback);
             }
+        });
+    }
+});
 
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: 'Anda yakin ingin mengirimkan revisi?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, revisi',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/update-status-revisi/${proposalId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        },
-                        body: JSON.stringify({ feedback: feedback })
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                Swal.fire('Berhasil!', 'Revisi berhasil dikirim.', 'success')
-                                    .then(() => location.reload());
-                            } else {
-                                Swal.fire('Gagal!', 'Terjadi kesalahan, revisi tidak dikirim.', 'error');
-                            }
-                        })
-                        .catch(error => Swal.fire('Gagal!', error.message, 'error'));
+</script>
+<style>
+    .card.card-doc {
+        border: 1px solid #ddd;
+        transition: background-color 0.3s ease;
+    }
+
+    .card.card-doc.checked {
+        background-color: #007bff!important;
+        border-color: #0056b3;
+    }
+
+    .card.card-doc.checked .text-dark {
+        color: #fff !important;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.lengkapdata-checkbox');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const card = checkbox.closest('.card');
+
+                if (this.checked) {
+                    card.classList.add('checked');
+                } else {
+                    card.classList.remove('checked');
                 }
             });
+        });
+    });
+</script>
+<script>
+    document.querySelectorAll('.lengkapdata-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        // Cek apakah semua checkbox dicentang
+        const allChecked = [...document.querySelectorAll('.lengkapdata-checkbox')]
+            .every(cb => cb.checked);
+
+        // Aktifkan atau nonaktifkan tombol berdasarkan kondisi
+        const lanjutkanBtn = document.getElementById('btn-continue');
+        if (allChecked) {
+            lanjutkanBtn.disabled = false; // Aktifkan tombol jika semua dicentang
+        } else {
+            lanjutkanBtn.disabled = true; // Nonaktifkan tombol jika ada yang belum dicentang
         }
     });
 });
+
 </script>
+<script>
+    function confirmSubmission(event) {
+        event.preventDefault(); // Mencegah pengiriman form langsung
+
+        // Tampilkan SweetAlert
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda tidak akan dapat mengubah data setelah dikirim!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Kirim!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit form jika pengguna mengonfirmasi
+                document.getElementById('rubrikForm').submit();
+            }
+        });
+
+        return false; // Mencegah pengiriman form secara default
+    }
+</script>
+
+
 @endpush
