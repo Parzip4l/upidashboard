@@ -16,6 +16,8 @@ use App\AdminDocument;
 use App\FundingHistory;
 use App\UserActivityLog;
 use App\PenilaianProposal;
+use App\User;
+use App\Reviewer;
 use DataTables;
 
 class HilirasasiInovasiController extends Controller
@@ -50,6 +52,7 @@ class HilirasasiInovasiController extends Controller
                 })
                 ->rawColumns(['action'])
                 ->make(true);
+                dd($data);
         }
 
         return view('inovasi');
@@ -226,7 +229,10 @@ class HilirasasiInovasiController extends Controller
             ->latest()
             ->get();
 
-        return view('single.singleinovasi', compact('data', 'nextProposal', 'previousProposal','logs','nilai'));
+        $datareviewer = User::where('role', 'reviewer')->get();
+        $existingReviewer = Reviewer::where('id_proposal', $id)->first();
+
+        return view('single.singleinovasi', compact('data', 'nextProposal', 'previousProposal','logs','nilai','datareviewer','existingReviewer'));
     }
 
 

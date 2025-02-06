@@ -183,6 +183,51 @@
                             </div>
                         </div>
 
+                        <!-- Assign Reviewer -->
+                         <hr>
+                         <h5>Reviewer Proposal</h5>
+                         <div class="reviewer-wrap mt-3">
+                            <form action="{{route('reviewer.set')}}" id="reviewer-assign" method="POST">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="hidden" name="id_proposal" value="{{$data->id}}">
+                                            <label for="reviewer1">Reviewer 1</label>
+                                            <select name="reviewer1" id="reviewer1" class="form-control">
+                                                <option value="">-- Select Reviewer --</option>
+                                                @foreach($datareviewer as $reviewer)
+                                                    <option value="{{ $reviewer->id }}" 
+                                                        {{ isset($existingReviewer) && $existingReviewer->reviewer1 == $reviewer->id ? 'selected' : '' }}>
+                                                        {{ $reviewer->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="reviewer1">Reviewer 2</label>
+                                            <select name="reviewer2" id="reviewer2" class="form-control">
+                                                <option value="">-- Select Reviewer --</option>
+                                                @foreach($datareviewer as $reviewer)
+                                                    <option value="{{ $reviewer->id }}" 
+                                                        {{ isset($existingReviewer) && $existingReviewer->reviewer2 == $reviewer->id ? 'selected' : '' }}>
+                                                        {{ $reviewer->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-small {{ isset($existingReviewer) ? 'btn-warning' : 'btn-primary' }} mt-2" type="submit">
+                                    {{ isset($existingReviewer) ? 'Update Data' : 'Submit Data' }}
+                                </button>
+                                
+                            </form>
+                         </div>
+
                     </div>
                 </div>
             </div>

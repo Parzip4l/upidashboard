@@ -17,6 +17,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\ProposalDataController;
 use App\Http\Controllers\Proposal\PemenangController;
+use App\Http\Controllers\Proposal\ReviewerController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\InovasiExport;
@@ -53,6 +54,8 @@ Route::group(['middleware' => ['role:admin|reviewer|superadmin']], function () {
     Route::post('penetapan-pemenang', [PemenangController::class, 'setWinner'])->name('pemenang.set');
     Route::get('/generate-word/{id}', [PemenangController::class, 'generateWord'])->name('generate.word');
 
+    // Reviewer
+    Route::post('penetapan-reviewer', [ReviewerController::class, 'store'])->name('reviewer.set');
 
     Route::get('/hilirasasi-inovasi', [HilirasasiInovasiController::class, 'index'])->name('hilirasasi-inovasi.index');
     Route::get('/hilirasasi-inovasi/single/{id}', [HilirasasiInovasiController::class, 'show'])->name('hilirasasi-inovasi.show');
