@@ -289,6 +289,7 @@
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="bukti_tkt">1. Upload Roadmap Proposal</label>
                                     <input type="file" name="roadmap" id="roadmap" class="form-control">
+                                    <a href="">Download Tamplate</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -301,54 +302,63 @@
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="proposal_usulan">3. Proposal Usulan (PDF only)</label>
                                     <input type="file" name="proposal_file" id="proposal_usulan" class="form-control" accept=".pdf">
+                                    <a href="">Download Tamplate</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="komitmen_mitra">4. Surat Pernyataan Komitmen Mitra (PDF only)</label>
                                     <input type="file" name="partner_commitment_letter" id="komitmen_mitra" class="form-control" accept=".pdf">
+                                    <a href="">Download Tamplate</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="komitmen_dana">5. Pernyataan Komitmen Dana Mitra (PDF only)</label>
                                     <input type="file" name="funding_commitment_letter" id="komitmen_dana" class="form-control" accept=".pdf">
+                                    <a href="">Download Tamplate</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="tidak_studi_lanjut">6. Surat Pernyataan Tidak Sedang Studi Lanjut dan Tidak Berafiliasi dengan Mitra (PDF only)</label>
                                     <input type="file" name="study_commitment_letter" id="tidak_studi_lanjut" class="form-control" accept=".pdf">
+                                    <a href="">Download Tamplate</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="biodata_pengusul">7. Formulir Biodata Pengusul (PDF only)</label>
                                     <input type="file" name="applicant_bio_form" id="biodata_pengusul" class="form-control" accept=".pdf">
+                                    <a href="">Download Tamplate</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="profil_mitra">8. Formulir Profil Mitra (PDF only)</label>
                                     <input type="file" name="partner_profile_form" id="profil_mitra" class="form-control" accept=".pdf">
+                                    <a href="">Download Tamplate</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="kesepakatan_kerja_sama">9. Surat Pernyataan Kesepakatan Pengusul dan Mitra Melakukan Kerja Sama (PDF only)</label>
                                     <input type="file" name="cooperation_agreement" id="kesepakatan_kerja_sama" class="form-control" accept=".pdf">
+                                    <a href="">Download Tamplate</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="perjanjian_hki">10. Perjanjian HKI dengan Mitra (PDF only)</label>
                                     <input type="file" name="hki_agreement" id="perjanjian_hki" class="form-control" accept=".pdf">
+                                    <a href="">Download Tamplate</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
                                     <label class="form-label" for="rencana_anggaran_biaya">11. Rencana Anggaran Biaya (Excel only)</label>
                                     <input type="file" name="budget_plan_file" id="rencana_anggaran_biaya" class="form-control" accept=".xls,.xlsx">
+                                    <a href="">Download Tamplate</a>
                                 </div>
                             </div>
                         </div>
